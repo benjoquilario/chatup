@@ -59,7 +59,7 @@ const AuthForm = () => {
             setErrorMessage(callback.error);
           }
 
-          if (callback?.ok) router.push('/dashboard');
+          if (callback?.ok) router.push('/users');
         })
         .catch(() => toast.error('Something went wrong'))
         .finally(() => setIsLoading(false));
@@ -72,7 +72,7 @@ const AuthForm = () => {
         .then(callback => {
           if (callback?.error) toast.error('Invalid credentials');
 
-          if (callback?.ok) router.push('/dashboard');
+          if (callback?.ok) router.push('/chat');
         })
         .finally(() => setIsLoading(false));
   };
