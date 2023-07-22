@@ -1,51 +1,25 @@
-import React from 'react';
-import classNames from 'classnames';
+import * as React from 'react';
 
-type Icon = {
-  className?: string;
-};
+import { cn } from '@/lib/cn';
 
-type InputProps = {
-  containerClassName?: string;
-  labelClassName?: string;
-  label?: string;
-  Icon?: React.ComponentType<Icon>;
-  iconClassName?: string;
-  className?: string;
-} & React.HTMLProps<HTMLInputElement>;
+export interface InputProps
+  extends React.InputHTMLAttributes<HTMLInputElement> {}
 
-const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
-  const {
-    containerClassName,
-    label,
-    labelClassName,
-    Icon,
-    iconClassName,
-    className,
-    ...inputProps
-  } = props;
-
-  return (
-    <div className={containerClassName}>
-      {label && (
-        <label htmlFor={label} className={labelClassName}>
-          {label}
-        </label>
-      )}
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, ...props }, ref) => {
+    return (
       <input
-        ref={ref}
-        className={classNames(
-          'block px-4 rounded-sm w-full border-0 focus:outline-none ring-1 ring-inset ring-[#313550] focus:ring-inset focus:ring-2 focus:ring-white',
-          'mb-2.5 text-sm shadow-background-900 py-1.5 placeholder:text-gray-900 text-ice',
+        type={type}
+        className={cn(
+          'flex h-10 w-full rounded-md border border-input bg-background text-white px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
-        {...inputProps}
+        ref={ref}
+        {...props}
       />
-      {Icon && <Icon className={iconClassName} />}
-    </div>
-  );
-});
-
+    );
+  }
+);
 Input.displayName = 'Input';
 
-export default React.memo(Input);
+export default Input;

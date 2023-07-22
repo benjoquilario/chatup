@@ -1,7 +1,4 @@
 'use client';
-import Input from '@/components/shared/Input';
-import Button from '@/components/shared/Button';
-import Link from 'next/link';
 import { FiGithub } from 'react-icons/fi';
 import { AiOutlineGoogle } from 'react-icons/ai';
 import { useForm, type SubmitHandler } from 'react-hook-form';
@@ -9,151 +6,175 @@ import axios from 'axios';
 import { signIn, useSession } from 'next-auth/react';
 import { toast } from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
+import Link from 'next/link';
+import Input from '@/components/shared/Input';
+import { Button } from '@/components/shared/Button';
+import Label from '@/components/shared/Label';
+import Loader from '@/components/shared/Loader';
+import { userAuthSchema } from '@/lib/validations/auth';
 import React, { useCallback, useState } from 'react';
 
-type TVariant = 'LOGIN' | 'REGISTER';
-type TFormValues = {
-  email: string;
-  password: string;
-  name: string;
-};
+interface AuthFormProps {
+  type: 'login' | 'register';
+}
 
-const AuthForm = () => {
+type FormData = z.infer<typeof userAuthSchema>;
+
+export default function AuthForm({ type }: AuthFormProps) {
   const router = useRouter();
-  const [variant, setVariant] = useState<TVariant>('LOGIN');
   const [isLoading, setIsLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | undefined>();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TFormValues>({
-    defaultValues: {
-      name: '',
-      email: '',
-      password: '',
-    },
+  } = useForm<FormData>({
+    resolver: zodResolver(userAuthSchema),
   });
 
-  const toggleVariant = useCallback(
-    () => (variant === 'LOGIN' ? setVariant('REGISTER') : setVariant('LOGIN')),
-    [variant]
-  );
+  console.log(isLoading);
 
-  const handleOnSubmit: SubmitHandler<TFormValues> = async data => {
+  async function handleOnSubmit(data: FormData) {
     setIsLoading(true);
 
-    if (variant === 'REGISTER')
-      axios
-        .post('/api/register', data)
-        .then(() =>
-          signIn('credentials', {
+    try {
+      if (type === 'register') {
+        axios
+          .post('/api/register', {
             ...data,
-            redirect: false,
           })
-        )
-        .then(callback => {
-          if (callback?.error) {
-            toast.error('Invalid Credentials!');
-            setErrorMessage(callback.error);
+          .then(res => {
+            if (res.status === 200) {
+              toast.success('Account created! Redirecting to login...');
+              setTimeout(() => router.push('/login'), 2000);
+            }
+          })
+          .catch(() => toast.error('Something went wrong!'))
+          .finally(() => setIsLoading(false));
+      } else {
+        signIn('credentials', {
+          ...data,
+          redirect: false,
+        }).then(res => {
+          if (res?.ok) {
+            router.refresh();
+            router.push('/chat');
+          } else {
+            setIsLoading(false);
+            toast.error('Invalid credentials');
           }
-
-          if (callback?.ok) router.push('/users');
-        })
-        .catch(() => toast.error('Something went wrong'))
-        .finally(() => setIsLoading(false));
-
-    if (variant === 'LOGIN')
-      signIn('credentials', {
-        ...data,
-        redirect: false,
-      })
-        .then(callback => {
-          if (callback?.error) toast.error('Invalid credentials');
-
-          if (callback?.ok) router.push('/chat');
-        })
-        .finally(() => setIsLoading(false));
-  };
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <div className="w-full mt-4">
       <form onSubmit={handleSubmit(handleOnSubmit)}>
-        {variant === 'REGISTER' && (
-          <Input
-            className="h-10 bg-background-900 mb-2.5"
-            labelClassName="sr-only text-white text-sm"
-            label="Name"
-            type="text"
-            placeholder="Name"
-            {...register('name', { required: true })}
-          />
-        )}
-        <Input
-          className="h-10 bg-background-900 mb-2.5"
-          labelClassName="sr-only text-white text-sm"
-          label="Email"
-          type="text"
-          placeholder="Email"
-          {...register('email', { required: true })}
-        />
-        <Input
-          className="h-10 bg-background-900 mb-2.5"
-          labelClassName="sr-only text-white text-sm"
-          label="Password"
-          type="password"
-          placeholder="Password"
-          {...register('password', { required: true })}
-        />
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="bg-primary text-white w-full h-10 rounded-sm"
-        >
-          {variant === 'LOGIN' ? 'Sign in' : 'Sign up'}
-        </Button>
-        <div className="mt-5">
-          <div className="relative">
-            <div
-              className="flex items-center inset-0 absolute"
-              aria-hidden="true"
-            >
-              <div className="border-t w-full border-[#313550]"></div>
+        <div className="w-full flex flex-col space-y-2">
+          {type === 'register' && (
+            <div className="grid w-full max-w-sm items-center gap-1.5">
+              <Label className="sr-only" htmlFor="name">
+                Name
+              </Label>
+              <Input
+                {...register('name')}
+                type="text"
+                id="name"
+                placeholder="Name"
+                autoCapitalize="none"
+                autoCorrect="off"
+                disabled={isLoading}
+              />
             </div>
-            <div className="leading-6 font-medium text-sm relative flex justify-center">
-              <span className="text-ice px-6 bg-background-800">
-                or continue with
-              </span>
-            </div>
+          )}
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label className="sr-only" htmlFor="email">
+              Email
+            </Label>
+            <Input
+              {...register('email', { required: true })}
+              type="email"
+              id="email"
+              placeholder={type === 'login' ? 'Email' : 'name@example.com'}
+              autoCapitalize="none"
+              autoComplete="email"
+              autoCorrect="off"
+            />
           </div>
-          <div className="w-full gap-3 flex justify-center items-center mt-6">
-            <Button className="hover:bg-[#3a3e5c] w-full flex justify-center items-center gap-2 rounded-md h-10 text-ice ring-1 ring-inset ring-[#313550]">
-              <AiOutlineGoogle aria-hidden="true" />
-              Google
-            </Button>
-            <Button className="hover:bg-[#3a3e5c] w-full flex justify-center items-center gap-2 rounded-md h-10 text-ice ring-1 ring-inset ring-[#313550]">
-              <FiGithub aria-hidden="true" />
-              Github
-            </Button>
+          <div className="grid w-full max-w-sm items-center gap-1.5">
+            <Label className="sr-only" htmlFor="password">
+              Password
+            </Label>
+            <Input
+              {...register('password', { required: true })}
+              type="password"
+              id="password"
+              placeholder="Password"
+              autoCapitalize="none"
+              autoCorrect="off"
+            />
           </div>
-        </div>
-        <div className="text-left text-sm mt-2">
-          <span className="text-ice">
-            {variant === 'LOGIN'
-              ? `Don't have an account?`
-              : 'Already have an account?'}
-          </span>
           <Button
-            onClick={toggleVariant}
-            className="text-white ml-1 underline transition duration-200 ease-in-out focus:text-primary hover:text-secondary "
+            className="w-full text-white"
+            type="submit"
+            disabled={isLoading}
           >
-            {variant === 'LOGIN' ? 'Register' : 'Login'}
+            {isLoading ? (
+              <Loader
+                classNameIcon="animate-spin w-6 h-6"
+                classNameContainer="text-white"
+              />
+            ) : type === 'login' ? (
+              'Sign in'
+            ) : (
+              'Sign up'
+            )}
           </Button>
+          <div className="mt-5">
+            <div className="relative">
+              <div
+                className="flex items-center inset-0 absolute"
+                aria-hidden="true"
+              >
+                <div className="border-t w-full border-border"></div>
+              </div>
+              <div className="leading-6 font-medium text-sm relative flex justify-center">
+                <span className="text-accent-foreground px-6 bg-background-800">
+                  or continue with
+                </span>
+              </div>
+            </div>
+            <div className="w-full gap-3 flex justify-center items-center mt-6">
+              <Button variant="outline">
+                <AiOutlineGoogle aria-hidden="true" />
+                Google
+              </Button>
+              <Button variant="outline">
+                <FiGithub aria-hidden="true" />
+                Github
+              </Button>
+            </div>
+          </div>
+          <div className="text-left text-sm mt-2">
+            <span className="text-accent-foreground">
+              {type === 'login'
+                ? `Don't have an account?`
+                : 'Already have an account?'}
+            </span>
+            <Link
+              href={type === 'login' ? '/register' : 'login'}
+              className="text-white ml-1 underline transition duration-200 ease-in-out focus:text-primary hover:text-accent-foreground"
+            >
+              {type === 'login' ? 'Register' : 'Login'}
+            </Link>
+          </div>
         </div>
       </form>
     </div>
   );
-};
-
-export default AuthForm;
+}

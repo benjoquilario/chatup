@@ -1,3 +1,5 @@
+const { fontFamily } = require('tailwindcss/defaultTheme');
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -14,16 +16,30 @@ module.exports = {
       },
       colors: {
         white: '#ffffff',
-        primary: '#406ae0',
-        ice: '#c9cad1',
-        red: '#f65164',
-        background: {
-          DEFAULT: '#000',
-          900: '#202442',
-          800: '#25294a',
+        primary: {
+          DEFAULT: 'hsl(var(--primary))',
+          foreground: '#6687e6',
         },
+        secondary: 'hsl(var(--secondary))',
+        accent: {
+          DEFAULT: 'hsl(var(--accent))',
+          foreground: 'hsl(var(--accent-foreground))',
+        },
+        ring: 'hsl(var(--ring))',
+        border: 'hsl(var(--border))',
+        input: 'hsl(var(--input))',
+        destructive: 'hsl(var(--destructive))',
+        background: 'hsl(var(--background))',
+      },
+      fontFamily: {
+        sans: ['var(--font-sans)', ...fontFamily.sans],
+        heading: ['var(--font-heading)', ...fontFamily.sans],
       },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/forms'),
+  ],
 };

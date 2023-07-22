@@ -9,7 +9,7 @@ export default withAuth(
     const isAuth = await getToken({ req });
     const isLoginPage = pathname.startsWith('/auth');
 
-    const sensitiveRoutes = ['/users', 'chat'];
+    const sensitiveRoutes = ['/users', '/chat'];
 
     const isAccessingSensitiveRoute = sensitiveRoutes.some(route =>
       pathname.startsWith(route)
@@ -24,7 +24,7 @@ export default withAuth(
     }
 
     if (!isAuth && isAccessingSensitiveRoute) {
-      return NextResponse.redirect(new URL('/auth', req.url));
+      return NextResponse.redirect(new URL('/login', req.url));
     }
   },
   {
@@ -37,5 +37,5 @@ export default withAuth(
 );
 
 export const config = {
-  matcher: ['/', '/auth', '/users/:path*', '/chat/:path*'],
+  matcher: ['/', '/login', '/register', '/users/:path*', '/chat/:path*'],
 };

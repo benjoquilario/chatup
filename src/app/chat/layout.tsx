@@ -1,36 +1,26 @@
 import Sidebar from '@/components/sidebar/Sidebar';
+import ChatList from '@/components/chat/ChatList';
+import ChatBody from '@/components/chat/ChatBody';
+import getChats from '@/utils/getChats';
+import getUsers from '@/utils/getUsers';
+import ChatItem from '@/components/chat/ChatItem';
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 import Input from '@/components/shared/Input';
-import UserItem from '@/components/users/UserItem';
+import Section from '@/components/shared/Section';
 
-type TLayoutProps = {
+interface LayoutProps {
   children: React.ReactNode;
-};
+}
 
-const Layout: React.FC<TLayoutProps> = ({ children }) => {
+const Layout: React.FC<LayoutProps> = async ({ children }) => {
+  const chats = await getChats();
+  const users = await getUsers();
+
   return (
-    <Sidebar>
-      <div className="fixed inset-y-0 w-full lg:w-80 overflow-y-auto left-28 pt-4">
-        <div className="">
-          <div className="w-full">
-            <div className="text-lg text-white py-2 font-semibold w-full">
-              Messages
-            </div>
-            {/* <div className="">
-              <Input
-                type="search"
-                label="search messenger"
-                labelClassName="sr-only"
-                className="bg-background-800 pl-4 !rounded-md !ring-0 shadow-background-900 py-3"
-                placeholder="Search by keyword"
-              />
-            </div>
-            <UserItem /> */}
-            <p className="text-sm text-ice">Nothing to show here...</p>
-          </div>
-        </div>
-      </div>
+    <Section>
+      <ChatList />
       {children}
-    </Sidebar>
+    </Section>
   );
 };
 

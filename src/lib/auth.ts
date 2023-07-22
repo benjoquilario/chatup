@@ -4,11 +4,11 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import GoogleProvider from 'next-auth/providers/google';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { credentialsValidator } from '@/utils/validations/credentials';
-import prisma from './db';
+import { credentialsValidator } from '@/lib/validations/credentials';
+import db from './db';
 
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(db),
   providers: [
     CredentialsProvider({
       name: 'credentials',
@@ -22,7 +22,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error('Invalid Credentials');
         }
 
-        const user = await prisma.user.findUnique({
+        const user = await db.user.findUnique({
           where: {
             email: cred.email,
           },

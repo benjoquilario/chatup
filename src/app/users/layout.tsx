@@ -1,27 +1,17 @@
+import Section from '@/components/shared/Section';
 import Sidebar from '@/components/sidebar/Sidebar';
 import UserList from '@/components/users/UserList';
 import React from 'react';
 
-type TLayoutProps = {
+interface LayoutProps {
   children: React.ReactNode;
-};
+}
 
-const Layout: React.FC<TLayoutProps> = async ({ children }) => {
+export default async function Layout({ children }: LayoutProps) {
   return (
-    <Sidebar>
-      <div className="fixed inset-y-0 w-full lg:w-80 overflow-y-auto left-28 pt-4">
-        <div className="">
-          <div className="w-full">
-            <div className="text-lg text-white py-2 font-semibold w-full">
-              People
-            </div>
-            <UserList />
-          </div>
-        </div>
-      </div>
+    <Section>
+      <UserList />
       {children}
-    </Sidebar>
+    </Section>
   );
-};
-
-export default Layout;
+}

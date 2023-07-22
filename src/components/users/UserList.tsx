@@ -1,16 +1,23 @@
 import UserItem from './UserItem';
-import React from 'react';
 import getUsers from '@/utils/getUsers';
+import ListContainer from '../shared/ListContainer';
+import Input from '../shared/Input';
+import React from 'react';
 
-const UserList: React.FC = async () => {
+const UserList = async () => {
   const users = await getUsers();
 
   return (
-    <React.Fragment>
-      {users.map(user => (
-        <UserItem user={user} key={user.id} />
+    <ListContainer listTitle="Users">
+      <Input
+        className="text-accent-foreground my-2"
+        type="Search"
+        placeholder="Search users..."
+      />
+      {users?.map(user => (
+        <UserItem key={user.id} user={user} />
       ))}
-    </React.Fragment>
+    </ListContainer>
   );
 };
 

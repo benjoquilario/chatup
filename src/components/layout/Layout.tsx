@@ -6,7 +6,7 @@ type LayoutProps = {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="min-h-screen overflow-hidden bg-background-900">
+    <div className="min-h-screen overflow-hidden bg-background">
       <h1 className="sr-only">Chatty</h1>
       {children}
     </div>

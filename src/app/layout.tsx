@@ -1,8 +1,21 @@
 import Layout from '@/components/layout/Layout';
+import localFont from 'next/font/local';
 import './globals.css';
-import { Inter } from 'next/font/google';
+import { Inter as FontSans } from 'next/font/google';
+import AuthContext from '@/components/context/AuthContext';
+import Provider from '@/components/context/Provider';
+import { cn } from '@/lib/cn';
 
-const inter = Inter({ subsets: ['latin'] });
+const fontSans = FontSans({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
+
+// Font files can be colocated inside of `pages`
+const fontHeading = localFont({
+  src: '../assets/fonts/CalSans-SemiBold.woff2',
+  variable: '--font-heading',
+});
 
 export const metadata = {
   title: 'Create Next App',
@@ -16,8 +29,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Layout>{children}</Layout>
+      <body
+        className={cn(
+          'font-sans bg-background antialiased h-full min-h-screen overflow-x-hidden',
+          fontSans.variable,
+          fontHeading.variable
+        )}
+      >
+        <Provider>
+          <AuthContext>{children}</AuthContext>
+        </Provider>
       </body>
     </html>
   );

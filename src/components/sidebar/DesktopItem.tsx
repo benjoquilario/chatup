@@ -1,34 +1,37 @@
 import Link from 'next/link';
-import classNames from 'classnames';
+import { cn } from '@/lib/cn';
 import React from 'react';
 
-type TDesktopItemProps = {
+interface DesktopItemProps {
   label: string;
   icon: any;
   href: string;
   onClick?: () => void;
   active?: boolean;
-};
+}
 
-const DesktopItem: React.FC<TDesktopItemProps> = ({
+export default function DesktopItem({
   label,
   icon: Icon,
   href,
   onClick,
   active,
-}) => {
+}: DesktopItemProps) {
   const handleClick = () => {
     if (onClick) {
       return onClick();
     }
   };
+
   return (
     <li onClick={handleClick}>
       <Link
         href={href}
-        className={classNames(
-          'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold text-ice hover:text-white hover:bg-primary',
-          active && 'bg-primary text-white'
+        className={cn(
+          'group flex gap-x-3 rounded-md p-3 text-sm leading-6 font-semibold text-accent-foreground hover:text-white hover:bg-primary',
+          {
+            'bg-primary text-white': active,
+          }
         )}
       >
         <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />
@@ -36,6 +39,4 @@ const DesktopItem: React.FC<TDesktopItemProps> = ({
       </Link>
     </li>
   );
-};
-
-export default DesktopItem;
+}
