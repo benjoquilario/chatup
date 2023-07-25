@@ -1,3 +1,5 @@
+'use client';
+import { useMemo } from 'react';
 import { Button } from '../shared/Button';
 import { BsPersonFill } from 'react-icons/bs';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
@@ -7,20 +9,32 @@ import {
   AvatarImage,
 } from '@/components/shared/Avatar';
 import { cn } from '@/lib/cn';
-import type { Chat, User } from '@prisma/client';
-import { useMemo } from 'react';
+import type { Conversation, User } from '@prisma/client';
+import { useSession } from 'next-auth/react';
 
 interface ChatHeaderProps {
-  chat?: Chat & {
+  conversation: Conversation & {
     users: User[];
   };
 }
 
-export default function ChatHeader({ chat }: ChatHeaderProps) {
-  // const statusText = useMemo(
-  //   () => (chat.isGroup ? `${chat.userIds.length} members` : 'Active'),
-  //   [chat]
-  // );
+export default function ChatHeader({ conversation }: ChatHeaderProps) {
+  const session = useSession();
+  const statusText = useMemo(
+    () =>
+      conversation.isGroup
+        ? `${conversation.userIds.length} members`
+        : 'Active',
+    [conversation]
+  );
+
+  const conversationPartner = useMemo(
+    () =>
+      conversation.users.find(
+        user => user.email !== session?.data?.user?.email
+      ),
+    [session.data?.user?.email, conversation]
+  );
 
   return (
     <div className="bg-background w-full flex border-b border-l border-border sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow ml-[-1px]">
@@ -30,7 +44,9 @@ export default function ChatHeader({ chat }: ChatHeaderProps) {
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div>
-          <h3 className="font-medium text-white">Benjo Quilario</h3>
+          <h3 className="font-medium text-white">
+            {conversation.name || conversationPartner?.name}
+          </h3>
           <p className="font-light text-xs text-accent-foreground">Offline</p>
         </div>
       </div>

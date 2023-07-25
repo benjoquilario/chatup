@@ -1,5 +1,6 @@
+import getChats from '@/utils/getConversation';
 import getSession from '@/utils/getSession';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import React from 'react';
 
 export default async function Chat() {

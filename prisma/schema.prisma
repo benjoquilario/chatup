@@ -20,8 +20,8 @@ model User {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  chatIds String[] @db.ObjectId
-  chat Chat[] @relation(fields: [chatIds], references: [id])
+  conversationIds String[] @db.ObjectId
+  conversation Conversation[] @relation(fields: [conversationIds], references: [id])
   
   seenMessageIds String[] @db.ObjectId
   seenMessages Message[] @relation("Seen", fields: [seenMessageIds], references: [id])
@@ -49,7 +49,7 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model Chat {
+model Conversation {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   createdAt       DateTime @default(now())
   lastMessageAt DateTime @default(now())
@@ -72,8 +72,8 @@ model Message {
   seenIds String[] @db.ObjectId
   seen User[] @relation("Seen", fields: [seenIds], references: [id])
 
-  chatId String @db.ObjectId
-  chat Chat @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  conversationId String @db.ObjectId
+  conversation Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   
   senderId String @db.ObjectId
   sender User @relation(fields: [senderId], references: [id], onDelete: Cascade)

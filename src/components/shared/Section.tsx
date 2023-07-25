@@ -1,4 +1,4 @@
-import React from 'react';
+'use client';
 import Sidebar from '@/components/sidebar/Sidebar';
 
 const Section = ({ children }: { children: React.ReactNode }) => (

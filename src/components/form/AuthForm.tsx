@@ -34,8 +34,6 @@ export default function AuthForm({ type }: AuthFormProps) {
     resolver: zodResolver(userAuthSchema),
   });
 
-  console.log(isLoading);
-
   async function handleOnSubmit(data: FormData) {
     setIsLoading(true);
 
@@ -60,6 +58,7 @@ export default function AuthForm({ type }: AuthFormProps) {
         }).then(res => {
           if (res?.ok) {
             router.refresh();
+
             router.push('/chat');
           } else {
             setIsLoading(false);

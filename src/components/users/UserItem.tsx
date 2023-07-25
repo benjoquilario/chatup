@@ -17,26 +17,12 @@ interface UserItemProps {
 
 export default function UserItem({ user }: UserItemProps) {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleOnClick = useCallback(async () => {
-    setIsLoading(true);
-
-    try {
-      // const res = await axios.post('/api/conversations', { userId: user.id });
-
-      // if (res.status === 200) {
-      //   setIsLoading(false);
-
-      router.push(`/chat/${user.id}`);
-      // }
-    } catch (error) {
-      console.log(error);
-      setIsLoading(false);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [user.id, router]);
+  const handleOnClick = useCallback(() => {
+    axios.post('/api/conversations', { userId: user.id }).then(data => {
+      router.push(`/conversation/${data.data.id}`);
+    });
+  }, [user, router]);
 
   return (
     <Button

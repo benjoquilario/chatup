@@ -1,11 +1,11 @@
-import { Chat, Message, User } from '@prisma/client';
+import { Conversation, Message, User } from '@prisma/client';
 
 interface FullMessage extends Message {
   sender: User;
   seen: User[];
 }
 
-type FullChat = Chat & {
+type FullConversation = Conversation & {
   users: User[];
   messages: FullMessageType;
 };

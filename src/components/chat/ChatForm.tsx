@@ -4,10 +4,8 @@ import { CldUploadButton } from 'next-cloudinary';
 import { HiPaperAirplane, HiPhoto } from 'react-icons/hi2';
 import { Button } from '@/components/shared/Button';
 import Input from '@/components/shared/Input';
-import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
-import useChat from '@/lib/hooks/useChat';
-import { toast } from 'react-hot-toast';
-import Textarea from '../shared/TextArea';
+import { useForm } from 'react-hook-form';
+import useConversation from '@/lib/hooks/useConversation';
 import {
   Avatar,
   AvatarFallback,
@@ -15,10 +13,14 @@ import {
 } from '@/components/shared/Avatar';
 import React, { useEffect, useRef, useState } from 'react';
 
+type FormData = {
+  message: string;
+};
+
 export default function ChatForm() {
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { chatId } = useChat();
+  const { conversationId } = useConversation();
 
   const {
     register,
@@ -28,11 +30,13 @@ export default function ChatForm() {
     watch,
     reset,
     formState: { errors, isSubmitSuccessful },
-  } = useForm<FieldValues>({
+  } = useForm<FormData>({
     defaultValues: {
       message: '',
     },
   });
+
+  const messageText = watch('message');
 
   useEffect(() => {
     if (isSubmitSuccessful) {
@@ -44,10 +48,23 @@ export default function ChatForm() {
     setFocus('message');
   }, [setFocus]);
 
-  const handleOnSubmit: SubmitHandler<FieldValues> = data => {
-    setValue('message', { shouldValidate: true });
-    axios.post('/api/messages', { ...data, chatId: chatId });
-  };
+  async function handleOnSubmit(data: FormData) {
+    setIsLoading(true);
+
+    try {
+      setValue('message', '', { shouldValidate: true });
+      const res = await axios.post('/api/messages', {
+        ...data,
+        conversationId: conversationId,
+      });
+
+      if (res.status === 200) setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && event.shiftKey === false) {
@@ -70,7 +87,7 @@ export default function ChatForm() {
         >
           <div className="relative w-full">
             <Input
-              className="text-white flex min-h-[60px]"
+              className="text-white flex"
               placeholder="Write a message..."
               {...register('message', { required: false })}
             />
