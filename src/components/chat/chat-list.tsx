@@ -1,14 +1,14 @@
 'use client';
 
-import ChatItem from './ChatItem';
-import Input from '@/components/shared/Input';
+import ChatItem from './chat-item';
+import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import type { FullConversation } from '@/types/typings';
 import type { User } from '@prisma/client';
 
 import React, { useEffect, useMemo, useState } from 'react';
-import ListContainer from '../shared/ListContainer';
+import ListContainer from '@/components/shared/list-container';
 import useChat from '@/lib/hooks/useConversation';
 import { pusherClient } from '@/lib/pusher';
 import find from 'lodash.find';
@@ -22,8 +22,6 @@ export default function ChatList({ conversations, users }: ChatListProps) {
   const [items, setItems] = useState(conversations);
   const router = useRouter();
   const session = useSession();
-
-  console.log(conversations);
 
   const { conversationId, isOpen } = useChat();
 

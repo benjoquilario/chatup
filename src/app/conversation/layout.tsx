@@ -1,7 +1,8 @@
-import ChatList from '@/components/chat/ChatList';
+import ChatList from '@/components/chat/chat-list';
 import getConversation from '@/utils/getConversation';
 import getUsers from '@/utils/getUsers';
-import Section from '@/components/shared/Section';
+import Section from '@/components/shared/section';
+import{redirect} from 'next/navigation';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -9,7 +10,6 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = async ({ children }) => {
   const conversations = await getConversation();
-  const users = await getUsers();
 
   return (
     <Section>

@@ -1,24 +1,29 @@
 import { BsFillChatLeftDotsFill } from 'react-icons/bs';
-import AuthForm from '@/components/form/AuthForm';
+import AuthForm from '@/components/form/auth-form';
+import { Button } from '@/components/shared/Button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { FiGithub } from 'react-icons/fi';
+import { AiOutlineGoogle } from 'react-icons/ai';
+import Label from '@/components/shared/Label';
+import Input from '@/components/shared/Input';
 
 const Login = () => {
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <div className="bg-secondary shadow-md max-h-md min-h-[450px] h-auto max-w-md w-full overflow-hidden rounded-sm py-8 md:py-10 px-6 md:px-8 mx-4">
-        <div className="flex flex-col">
-          <BsFillChatLeftDotsFill
-            aria-hidden="true"
-            className="text-accent-foreground w-10 h-10 mb-2"
-          />
-          <h2 className="text-accent-foreground text-left font-semibold text-lg md:text-2xl">
-            Welcome to Chatty
-          </h2>
-          <p className="text-accent-foreground text-left text-sm mt-2">
-            Enter your credentials to login
-          </p>
-          <AuthForm type="login" />
-        </div>
-      </div>
+      <Card className="w-[450px]">
+        <CardHeader>
+          <CardTitle className="text-2xl">Welcome to Chatty!</CardTitle>
+          <CardDescription>Enter your credentials to login.</CardDescription>
+        </CardHeader>
+        <AuthForm type="login" />
+      </Card>
     </div>
   );
 };

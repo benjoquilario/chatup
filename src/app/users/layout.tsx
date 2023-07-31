@@ -1,6 +1,5 @@
-import Section from '@/components/shared/Section';
-import Sidebar from '@/components/sidebar/Sidebar';
-import UserList from '@/components/users/UserList';
+import Section from '@/components/shared/section';
+import UserList from '@/components/users/user-list';
 import React from 'react';
 
 interface LayoutProps {

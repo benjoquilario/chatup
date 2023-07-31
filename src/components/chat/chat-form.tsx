@@ -2,15 +2,15 @@
 import axios from 'axios';
 import { CldUploadButton } from 'next-cloudinary';
 import { HiPaperAirplane, HiPhoto } from 'react-icons/hi2';
-import { Button } from '@/components/shared/Button';
-import Input from '@/components/shared/Input';
+import { Button } from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import useConversation from '@/lib/hooks/useConversation';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from '@/components/shared/Avatar';
+} from '@/components/ui/avatar';
 import React, { useEffect, useRef, useState } from 'react';
 
 type FormData = {

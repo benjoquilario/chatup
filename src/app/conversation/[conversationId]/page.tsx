@@ -1,28 +1,12 @@
-import ChatBody from '@/components/chat/ChatBody';
-import ChatHeader from '@/components/chat/ChatHeader';
+import ChatBody from '@/components/chat/chat-body';
+import ChatHeader from '@/components/chat/chat-header';
 import getCurrentUser from '@/utils/getCurrentUser';
 import db from '@/lib/db';
 import type { Conversation } from '@prisma/client';
 import React from 'react';
 import getSession from '@/utils/getSession';
 import { notFound } from 'next/navigation';
-
-async function getChatMessages(conversationId: Conversation['id']) {
-  const messages = await db.message.findMany({
-    where: {
-      conversationId,
-    },
-    include: {
-      sender: true,
-      seen: true,
-    },
-    orderBy: {
-      createdAt: 'asc',
-    },
-  });
-
-  return messages;
-}
+import getChatMessages from '@/utils/getMessages';
 
 async function getConversationForUser(conversationId: Conversation['id']) {
   const currentUser = await getCurrentUser();

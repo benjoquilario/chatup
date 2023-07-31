@@ -3,9 +3,9 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from '@/components/shared/Avatar';
+} from '@/components/ui/avatar';
 import useRoutes from '@/lib/hooks/useRoutes';
-import DesktopItem from './DesktopItem';
+import DesktopItem from './desktop-item';
 
 interface SidebarProps {
   children?: React.ReactNode;
@@ -15,7 +15,7 @@ export default function Sidebar({ children }: SidebarProps) {
   const routes = useRoutes();
 
   return (
-    <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-20 xl:px-6 lg:overflow-y-auto lg:bg-secondary my-4 mx-2 lg:pb-4 lg:flex lg:flex-col justify-between">
+    <div className="hidden lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-16 xl:px-6 lg:overflow-y-auto lg:pb-4 lg:flex lg:flex-col justify-between border-r border-border">
       <nav className="mt-4 flex flex-col justify-between">
         <ul role="list" className="flex flex-col items-center space-y-1">
           {routes.map(route => (

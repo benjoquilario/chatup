@@ -12,11 +12,11 @@ const ListContainer: React.FC<ListContainerProps> = ({
 }) => {
   return (
     <React.Fragment>
-      <div className="flex absolute left-5 text-white top-5 justify-between mb-4 pt-4">
+      <h3 className="flex absolute left-5 font-heading text-2xl font-medium top-5 justify-between mb-4 pt-4 leading-tight">
         {listTitle}
-      </div>
-      <aside className="fixed mt-16 inset-y-0 pb-20 lg:pb-0 lg:left-20 lg:w-80 lg:block overflow-y-auto border-r border-border hidden">
-        <div className="px-5">{children}</div>
+      </h3>
+      <aside className="fixed pt-16 inset-y-0 pb-20 lg:pb-0 lg:left-20 lg:w-[360px] lg:block overflow-y-auto border-r border-border hidden">
+        <div className="pl-1 pr-5">{children}</div>
       </aside>
     </React.Fragment>
   );

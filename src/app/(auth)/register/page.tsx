@@ -1,24 +1,23 @@
-import { BsFillChatLeftDotsFill } from 'react-icons/bs';
-import AuthForm from '@/components/form/AuthForm';
+import AuthForm from '@/components/form/auth-form';
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 
 const Register = () => {
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <div className="bg-background-800 shadow-background-800 max-h-md min-h-[450px] h-auto max-w-md w-full overflow-hidden rounded-sm py-8 md:py-10 px-6 md:px-8 mx-4">
-        <div className="flex flex-col">
-          <BsFillChatLeftDotsFill
-            aria-hidden="true"
-            className="text-[#c9cad1] w-10 h-10 mb-2"
-          />
-          <h2 className="text-[#c9cad1] text-left font-semibold text-lg md:text-2xl">
-            Sign Up
-          </h2>
-          <p className="text-[#747689] text-left text-sm mt-2">
-            Create an account with your email and password
-          </p>
-          <AuthForm type="register" />
-        </div>
-      </div>
+      <Card className="w-[450px]">
+        <CardHeader>
+          <CardTitle className="text-2xl">Create an account!</CardTitle>
+          <CardDescription>
+            Enter your email below to create your account.
+          </CardDescription>
+        </CardHeader>
+        <AuthForm type="register" />
+      </Card>
     </div>
   );
 };

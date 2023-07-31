@@ -1,7 +1,7 @@
-import UserItem from './UserItem';
+import UserItem from './user-item';
 import getUsers from '@/utils/getUsers';
-import ListContainer from '../shared/ListContainer';
-import Input from '../shared/Input';
+import ListContainer from '@/components/shared/list-container';
+import { Input } from '@/components/ui/input';
 import React from 'react';
 
 const UserList = async () => {
@@ -9,8 +9,9 @@ const UserList = async () => {
 
   return (
     <ListContainer listTitle="Users">
+      <span className="text-xs text-muted-foreground/80">Active Users(20)</span>
       <Input
-        className="text-accent-foreground my-2"
+        className="text-accent-foreground my-2 bg-secondary rounded-full"
         type="Search"
         placeholder="Search users..."
       />

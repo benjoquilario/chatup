@@ -1,10 +1,10 @@
 'use client';
-import Sidebar from '@/components/sidebar/Sidebar';
+import Sidebar from '@/components/sidebar/sidebar';
 
 const Section = ({ children }: { children: React.ReactNode }) => (
   <div className="h-full">
     <Sidebar />
-    <main className="lg:pl-20 h-full">
+    <main className="lg:pl-16 h-full">
       <div className="relative h-full">{children}</div>
     </main>
   </div>

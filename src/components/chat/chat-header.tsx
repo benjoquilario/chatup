@@ -1,13 +1,13 @@
 'use client';
 import { useMemo } from 'react';
-import { Button } from '../shared/Button';
+import { Button } from '@/components/ui/button';
 import { BsPersonFill } from 'react-icons/bs';
 import { BiDotsVerticalRounded } from 'react-icons/bi';
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from '@/components/shared/Avatar';
+} from '@/components/ui/avatar';
 import { cn } from '@/lib/cn';
 import type { Conversation, User } from '@prisma/client';
 import { useSession } from 'next-auth/react';
@@ -37,14 +37,14 @@ export default function ChatHeader({ conversation }: ChatHeaderProps) {
   );
 
   return (
-    <div className="bg-background w-full flex border-b border-l border-border sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow ml-[-1px]">
+    <div className="bg-background w-full flex border-b border-border sm:px-4 py-3 px-4 lg:px-6 justify-between items-center shadow">
       <div className="flex gap-2 items-center">
         <Avatar className="w-10 h-10">
           <AvatarImage src="/images/placeholder.jpg" />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <div>
-          <h3 className="font-medium text-white">
+          <h3 className="font-heading font-medium leading-tight capitalize">
             {conversation.name || conversationPartner?.name}
           </h3>
           <p className="font-light text-xs text-accent-foreground">Offline</p>

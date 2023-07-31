@@ -1,12 +1,8 @@
 'use client';
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from '@/components/shared/Avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import Link from 'next/link';
 import type { FullConversation } from '@/types/typings';
-import { buttonVariants } from '../shared/Button';
+import { buttonVariants } from '@/components/ui/button';
 import { cn } from '@/lib/cn';
 import { format } from 'date-fns';
 import { useSession } from 'next-auth/react';
@@ -53,9 +49,9 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
     <Link
       className={cn(
         buttonVariants({ variant: 'secondary', size: 'lg' }),
-        'w-full h-[4.25rem] py-2 px-4',
+        'w-full h-[4.25rem] py-2 px-4 rounded-sm',
         {
-          'bg-primary hover:bg-primary/90': selected,
+          'bg-[#406ae0] hover:bg-[#5378e3]': selected,
         }
       )}
       href={`/converstion/${conversation.id}`}
@@ -63,21 +59,31 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
       <Avatar>
         <AvatarImage src="/images/placeholder.jpg" />
         <AvatarFallback>
-          <div className='bg-secondary h-12 w-12 animate-pulse'>
-          </div>
+          <div className="bg-secondary h-12 w-12 animate-pulse"></div>
         </AvatarFallback>
       </Avatar>
       <div className="flex justify-between w-full items-center ml-2">
         <div className="flex justify-between h-full flex-col text-sm items-start">
-          <h3 className="text-white text-[15px] font-medium tracking-tight">
+          <h3
+            className={cn(
+              'text-[15px] capitalize font-heading font-medium tracking-tight',
+              {
+                'text-[#ebeffc]': selected,
+              }
+            )}
+          >
             {conversationPartner?.name || conversation.name}
           </h3>
-          <span className="text-accent-foreground text-[12px] font-medium">
+          <span
+            className={cn('text-accent-foreground text-[12px] font-medium', {
+              'text-[#9eb3f0]': selected,
+            })}
+          >
             {lastMessageText}
           </span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="text-xs text-accent-foreground font-light mb-1">
+          <span className="text-xs text-[#ebeffc] font-light mb-1">
             {/* {format(new Date(lastMessage.createdAt), 'p')} */}
             15 min ago
           </span>
