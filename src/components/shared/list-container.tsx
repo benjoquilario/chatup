@@ -1,10 +1,10 @@
-'use client';
-import React from 'react';
+"use client"
+import React from "react"
 
 type ListContainerProps = {
-  children: React.ReactNode;
-  listTitle: string;
-};
+  children: React.ReactNode
+  listTitle: string
+}
 
 const ListContainer: React.FC<ListContainerProps> = ({
   children,
@@ -12,14 +12,14 @@ const ListContainer: React.FC<ListContainerProps> = ({
 }) => {
   return (
     <React.Fragment>
-      <h3 className="flex absolute left-5 font-heading text-2xl font-medium top-5 justify-between mb-4 pt-4 leading-tight">
+      <h3 className="absolute left-5 top-5 mb-4 flex justify-between pt-4 font-heading text-2xl font-medium leading-tight">
         {listTitle}
       </h3>
-      <aside className="fixed pt-16 inset-y-0 pb-20 lg:pb-0 lg:left-20 lg:w-[360px] lg:block overflow-y-auto border-r border-border hidden">
+      <aside className="fixed inset-y-0 hidden overflow-y-auto border-r border-border pb-20 pt-16 lg:left-20 lg:block lg:w-[360px] lg:pb-0">
         <div className="pl-1 pr-5">{children}</div>
       </aside>
     </React.Fragment>
-  );
-};
+  )
+}
 
-export default ListContainer;
+export default ListContainer

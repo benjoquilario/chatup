@@ -8,6 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "dbpush": "prisma db push",
+    "turbo": "next dev --turbo",
+    "preview": "next build && next start",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -32,8 +34,6 @@
     "classnames": "^2.3.2",
     "clsx": "^2.0.0",
     "date-fns": "^2.30.0",
-    "eslint": "8.44.0",
-    "eslint-config-next": "13.4.8",
     "lodash.find": "^4.6.0",
     "lucide-react": "^0.263.1",
     "next": "13.4.8",
@@ -59,6 +59,16 @@
     "zustand": "^4.3.9"
   },
   "devDependencies": {
-    "@types/lodash.find": "^4.6.7"
+    "@ianvs/prettier-plugin-sort-imports": "^4.1.0",
+    "@types/lodash.find": "^4.6.7",
+    "@types/prettier": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.2.1",
+    "@typescript-eslint/parser": "^6.2.1",
+    "eslint": "^8.46.0",
+    "eslint-config-next": "^13.4.12",
+    "eslint-config-prettier": "^8.9.0",
+    "eslint-plugin-react": "^7.33.1",
+    "prettier": "^3.0.0",
+    "prettier-plugin-tailwindcss": "^0.4.1"
   }
 }

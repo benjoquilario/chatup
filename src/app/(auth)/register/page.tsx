@@ -1,14 +1,14 @@
-import AuthForm from '@/components/form/auth-form';
+import AuthForm from "@/components/form/auth-form"
 import {
   Card,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card';
+} from "@/components/ui/card"
 
 const Register = () => {
   return (
-    <div className="flex justify-center items-center min-h-screen">
+    <div className="flex min-h-screen items-center justify-center">
       <Card className="w-[450px]">
         <CardHeader>
           <CardTitle className="text-2xl">Create an account!</CardTitle>
@@ -19,7 +19,7 @@ const Register = () => {
         <AuthForm type="register" />
       </Card>
     </div>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

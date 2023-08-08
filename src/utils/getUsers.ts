@@ -1,19 +1,19 @@
-import getSession from './getSession';
-import db from '@/lib/db';
+import getSession from "./getSession"
+import db from "@/lib/db"
 
 export default async function getUsers() {
-  const session = await getSession();
+  const session = await getSession()
 
-  if (!session?.user?.email) return [];
+  if (!session?.user?.email) return []
 
   return await db.user.findMany({
     orderBy: {
-      createdAt: 'desc',
+      createdAt: "desc",
     },
     where: {
       NOT: {
         email: session.user.email,
       },
     },
-  });
+  })
 }

@@ -1,27 +1,22 @@
-import ChatBody from '@/components/chat/chat-body';
-import ChatHeader from '@/components/chat/chat-header';
-import getConversations from '@/utils/getConversation';
-import getChats from '@/utils/getConversation';
-import getChatMessages from '@/utils/getMessages';
-import getSession from '@/utils/getSession';
-import { notFound, redirect, useRouter } from 'next/navigation';
-import React from 'react';
+import getConversations from "@/utils/getConversation"
+import getSession from "@/utils/getSession"
+import { notFound } from "next/navigation"
+import React from "react"
+import Link from "next/link"
 
 export default async function Chat() {
-  const session = await getSession();
-  const conversations = await getConversations();
+  const session = await getSession()
 
-  if (!session) notFound();
-
-  if(conversations) {
-    redirect(`/conversation/${conversations[0].id}`);
-  }
+  if (!session) notFound()
 
   return (
-    <div className="flex justify-center items-center h-full min-h-screen pl-80">
+    <div className="flex h-full items-center justify-center pl-80">
       <h4 className="text-2xl font-semibold">
-        Select a chat or search user to start a conversation
+        Select a chat or find user to start a conversation
       </h4>
+      <Link href="/" className="text-center underline underline-offset-4">
+        Find Users
+      </Link>
     </div>
-  );
+  )
 }

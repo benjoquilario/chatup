@@ -1,20 +1,20 @@
-import db from '@/lib/db';
-import getSession from './getSession';
+import db from "@/lib/db"
+import getSession from "./getSession"
 
 const getCurrentUser = async () => {
-  const session = await getSession();
+  const session = await getSession()
 
-  if (!session?.user?.email) return null;
+  if (!session?.user?.email) return null
 
   const currentUser = await db.user.findUnique({
     where: {
       email: session.user.email,
     },
-  });
+  })
 
-  if (!currentUser) return null;
+  if (!currentUser) return null
 
-  return currentUser;
-};
+  return currentUser
+}
 
-export default getCurrentUser;
+export default getCurrentUser

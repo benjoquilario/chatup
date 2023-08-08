@@ -1,41 +1,49 @@
-import { getToken } from 'next-auth/jwt';
-import { withAuth } from 'next-auth/middleware';
-import { NextResponse } from 'next/server';
+import { getToken } from "next-auth/jwt"
+import { withAuth } from "next-auth/middleware"
+import { NextResponse } from "next/server"
 
 export default withAuth(
   async function middleware(req) {
-    const pathname = req.nextUrl.pathname;
+    const token = await getToken({ req })
+    const pathname = req.nextUrl.pathname
 
-    const isAuth = await getToken({ req });
-    const isLoginPage = pathname.startsWith('/auth');
+    const isAuth = !!token
+    const isAuthPage =
+      pathname.startsWith("/login") || pathname.startsWith("/register")
 
-    const sensitiveRoutes = ['/users', '/chat'];
+    const sensitiveRoutes = ["/users", "/conversation"]
 
-    const isAccessingSensitiveRoute = sensitiveRoutes.some(route =>
+    const isAccessingSensitiveRoute = sensitiveRoutes.some((route) =>
       pathname.startsWith(route)
-    );
+    )
 
-    if (isLoginPage) {
+    if (isAuthPage) {
       if (isAuth) {
-        return NextResponse.redirect(new URL('/chat', req.url));
+        return NextResponse.redirect(new URL("/conversation", req.url))
       }
 
-      return NextResponse.next();
+      return NextResponse.next()
     }
 
     if (!isAuth && isAccessingSensitiveRoute) {
-      return NextResponse.redirect(new URL('/login', req.url));
+      return NextResponse.redirect(new URL("/login", req.url))
     }
   },
   {
     callbacks: {
       async authorized() {
-        return true;
+        return true
       },
     },
   }
-);
+)
 
 export const config = {
-  matcher: ['/', '/login', '/register', '/users/:path*', '/chat/:path*'],
-};
+  matcher: [
+    "/",
+    "/login",
+    "/register",
+    "/users/:path*",
+    "/conversation/:path*",
+  ],
+}

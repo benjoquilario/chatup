@@ -1,14 +1,14 @@
-import db from '@/lib/db';
-import getCurrentUser from './getCurrentUser';
+import db from "@/lib/db"
+import getCurrentUser from "./getCurrentUser"
 
 const getConversations = async () => {
-  const currentUser = await getCurrentUser();
+  const currentUser = await getCurrentUser()
 
-  if (!currentUser?.id) return [];
+  if (!currentUser?.id) return []
 
   const conversations = await db.conversation.findMany({
     orderBy: {
-      lastMessageAt: 'desc',
+      lastMessageAt: "desc",
     },
     where: {
       userIds: {
@@ -24,9 +24,9 @@ const getConversations = async () => {
         },
       },
     },
-  });
+  })
 
-  return conversations;
-};
+  return conversations
+}
 
-export default getConversations;
+export default getConversations

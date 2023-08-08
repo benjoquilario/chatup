@@ -1,30 +1,30 @@
-'use client';
-import { FiGithub } from 'react-icons/fi';
-import { AiOutlineGoogle } from 'react-icons/ai';
-import { useForm, type SubmitHandler } from 'react-hook-form';
-import axios from 'axios';
-import { signIn, useSession } from 'next-auth/react';
-import { toast } from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import Link from 'next/link';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { userAuthSchema } from '@/lib/validations/auth';
-import React, { useCallback, useState } from 'react';
-import { CardContent, CardFooter } from '../ui/card';
+"use client"
+import { FiGithub } from "react-icons/fi"
+import { AiOutlineGoogle } from "react-icons/ai"
+import { useForm, type SubmitHandler } from "react-hook-form"
+import axios from "axios"
+import { signIn, useSession } from "next-auth/react"
+import { toast } from "react-hot-toast"
+import { useRouter } from "next/navigation"
+import { zodResolver } from "@hookform/resolvers/zod"
+import * as z from "zod"
+import Link from "next/link"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Label } from "@/components/ui/label"
+import { userAuthSchema } from "@/lib/validations/auth"
+import React, { useCallback, useState } from "react"
+import { CardContent, CardFooter } from "../ui/card"
 
 interface AuthFormProps {
-  type: 'login' | 'register';
+  type: "login" | "register"
 }
 
-type FormData = z.infer<typeof userAuthSchema>;
+type FormData = z.infer<typeof userAuthSchema>
 
 export default function AuthForm({ type }: AuthFormProps) {
-  const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
   const {
     register,
@@ -32,49 +32,49 @@ export default function AuthForm({ type }: AuthFormProps) {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(userAuthSchema),
-  });
+  })
 
-  async function handleOnSubmit(data: FormData) {
-    setIsLoading(true);
+  function handleOnSubmit(data: FormData) {
+    setIsLoading(true)
 
     try {
-      if (type === 'register') {
+      if (type === "register") {
         axios
-          .post('/api/register', {
+          .post("/api/register", {
             ...data,
           })
-          .then(res => {
+          .then((res) => {
             if (res.status === 200) {
-              toast.success('Account created! Redirecting to login...');
-              setTimeout(() => router.push('/login'), 2000);
+              toast.success("Account created! Redirecting to login...")
+              setTimeout(() => router.push("/login"), 2000)
             }
           })
-          .catch(() => toast.error('Something went wrong!'))
-          .finally(() => setIsLoading(false));
+          .catch(() => toast.error("Something went wrong!"))
+          .finally(() => setIsLoading(false))
       } else {
-        signIn('credentials', {
+        signIn("credentials", {
           ...data,
           redirect: false,
-        }).then(res => {
+        }).then((res) => {
           if (res?.ok) {
-            router.refresh();
+            router.refresh()
 
-            router.push('/conversation');
+            router.push("/conversation")
           } else {
-            setIsLoading(false);
-            toast.error('Invalid credentials');
+            setIsLoading(false)
+            toast.error("Invalid credentials")
           }
-        });
+        })
       }
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   return (
     <React.Fragment>
       <CardContent className="grid gap-4">
-        <div className="w-full gap-3 grid grid-cols-2">
+        <div className="grid w-full grid-cols-2 gap-3">
           <Button variant="outline">
             <AiOutlineGoogle aria-hidden="true" className="mr-2 h-4 w-4" />
             Google
@@ -95,16 +95,13 @@ export default function AuthForm({ type }: AuthFormProps) {
           </div>
         </div>
         <form className="grid gap-4" onSubmit={handleSubmit(handleOnSubmit)}>
-          {type === 'register' && (
-            <div>
-              <Label className="sr-only" htmlFor="name">
-                Name
-              </Label>
+          {type === "register" && (
+            <div className="grid gap-2">
+              <Label htmlFor="name">Name</Label>
               <Input
-                {...register('name')}
+                {...register("name")}
                 type="text"
                 id="name"
-                placeholder="Name"
                 autoCapitalize="none"
                 autoCorrect="off"
                 disabled={isLoading}
@@ -114,7 +111,7 @@ export default function AuthForm({ type }: AuthFormProps) {
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
-              {...register('email', { required: true })}
+              {...register("email", { required: true })}
               id="email"
               placeholder="m@example.com"
               autoCapitalize="none"
@@ -127,34 +124,34 @@ export default function AuthForm({ type }: AuthFormProps) {
           <div className="grid gap-2">
             <Label htmlFor="password">Password</Label>
             <Input
-              {...register('password', { required: true })}
+              {...register("password", { required: true })}
               type="password"
               id="password"
-              placeholder="Password"
               autoCapitalize="none"
               autoCorrect="off"
+              disabled={isLoading}
             />
           </div>
-          <Button className="w-full" type="submit">
-            {type === 'login' ? 'Sign In' : 'Create an account'}
+          <Button className="w-full" disabled={isLoading} type="submit">
+            {type === "login" ? "Sign In" : "Create an account"}
           </Button>
         </form>
       </CardContent>
       <CardFooter className="grid gap-1.5">
-        <div className="text-left text-sm mt-2">
+        <div className="mt-2 text-left text-sm">
           <span className="text-muted-foreground">
-            {type === 'login'
+            {type === "login"
               ? `Don't have an account?`
-              : 'Already have an account?'}
+              : "Already have an account?"}
           </span>
           <Link
-            href={type === 'login' ? '/register' : 'login'}
-            className="ml-1 underline transition duration-200 ease-in-out text-muted-foreground hover:text-primary"
+            href={type === "login" ? "/register" : "login"}
+            className="ml-1 text-muted-foreground underline transition duration-200 ease-in-out hover:text-primary"
           >
-            {type === 'login' ? 'Register' : 'Login'}
+            {type === "login" ? "Register" : "Login"}
           </Link>
         </div>
       </CardFooter>
     </React.Fragment>
-  );
+  )
 }

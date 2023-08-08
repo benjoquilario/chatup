@@ -1,8 +1,8 @@
-import type { Conversation } from '@prisma/client';
-import db from '@/lib/db';
+import type { Conversation } from "@prisma/client"
+import db from "@/lib/db"
 
 export default async function getChatMessages(
-  conversationId: Conversation['id']
+  conversationId: Conversation["id"]
 ) {
   const messages = await db.message.findMany({
     where: {
@@ -13,9 +13,9 @@ export default async function getChatMessages(
       seen: true,
     },
     orderBy: {
-      createdAt: 'asc',
+      createdAt: "asc",
     },
-  });
+  })
 
-  return messages;
+  return messages
 }
