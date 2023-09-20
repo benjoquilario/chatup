@@ -32,7 +32,9 @@ export default function DesktopItem({
         href={href}
         className={buttonVariants({
           variant: "ghost",
-          className: active && "bg-primary text-primary-foreground hover:bg-primary/90",
+          className: active
+            ? "bg-primary py-4 text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground/90"
+            : "py-4",
         })}
       >
         <Icon className="h-6 w-6 shrink-0" aria-hidden="true" />

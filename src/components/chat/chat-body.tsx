@@ -83,7 +83,7 @@ export default function ChatBody({
                   </Avatar>
                 </div>
                 <div
-                  className={cn("rounded-md p-3 text-sm shadow-md", {
+                  className={cn("rounded-lg p-3 text-sm shadow-md", {
                     "bg-primary text-primary-foreground": isCurrentUser,
                     "bg-muted": !isCurrentUser,
                   })}
@@ -91,7 +91,7 @@ export default function ChatBody({
                   <p>{message.body}</p>
                   <div
                     className={cn("mt-2 text-xs", {
-                      "text-foreground/90": isCurrentUser,
+                      "text-primary-foreground/90": isCurrentUser,
                     })}
                   >
                     10:30 AM
