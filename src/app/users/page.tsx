@@ -1,17 +1,16 @@
-import { Skeleton } from '@/components/ui/skeleton';
-import getSession from '@/utils/getSession';
-import { notFound } from 'next/navigation';
+import getSession from "@/utils/getSession"
+import { notFound } from "next/navigation"
 
 export default async function UsersPage() {
-  const session = await getSession();
+  const session = await getSession()
 
-  if (!session) notFound();
+  if (!session) notFound()
 
   return (
-    <div className="flex justify-center items-center h-full min-h-screen pl-[375px]">
+    <div className="flex h-full min-h-screen items-center justify-center pl-[375px]">
       <h4 className="text-2xl font-semibold">
         Select a chat or search user to start a conversation
       </h4>
     </div>
-  );
+  )
 }

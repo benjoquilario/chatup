@@ -29,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "h-full min-h-screen overflow-x-hidden bg-background font-sans antialiased",
@@ -39,7 +39,10 @@ export default function RootLayout({
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <Provider>
-            <AuthContext>{children}</AuthContext>
+            <AuthContext>
+              <h1 className="sr-only">Chatty</h1>
+              {children}
+            </AuthContext>
           </Provider>
         </ThemeProvider>
       </body>

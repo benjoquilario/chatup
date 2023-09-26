@@ -52,7 +52,7 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
     <Link
       className={cn(
         buttonVariants({ variant: "secondary", size: "lg" }),
-        "mb-2 h-[4.25rem] w-full rounded-sm px-4 py-2",
+        "mb-2 h-[4.25rem] w-full rounded-sm bg-secondary/80 px-4 py-2",
         {
           "bg-primary text-primary-foreground hover:bg-primary/90": selected,
         }

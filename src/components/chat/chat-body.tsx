@@ -6,6 +6,7 @@ import { cn } from "@/lib/cn"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import ChatForm from "./chat-form"
 import { pusherClient } from "@/lib/pusher"
+import { format } from "date-fns"
 import find from "lodash.find"
 import useConversation from "@/lib/hooks/useConversation"
 
@@ -94,7 +95,7 @@ export default function ChatBody({
                       "text-primary-foreground/90": isCurrentUser,
                     })}
                   >
-                    10:30 AM
+                    {format(new Date(message.createdAt), "p")}
                   </div>
                 </div>
               </div>
