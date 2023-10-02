@@ -7,7 +7,7 @@ export default async function UsersPage() {
   if (!session) notFound()
 
   return (
-    <div className="flex h-full min-h-screen items-center justify-center pl-[375px]">
+    <div className="hidden h-full min-h-screen items-center justify-center pl-0 md:flex md:pl-[375px]">
       <h4 className="text-2xl font-semibold">
         Select a chat or search user to start a conversation
       </h4>

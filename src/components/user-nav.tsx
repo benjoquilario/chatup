@@ -1,4 +1,5 @@
 "use client"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,6 +11,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "./ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import Link from "next/link"
+import { signOut } from "next-auth/react"
 
 const UserNav = () => {
   return (
@@ -18,7 +21,9 @@ const UserNav = () => {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-10 w-10">
             <AvatarImage src="/images/placeholder.jpg" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>
+              <div className="h-full w-full animate-pulse"></div>
+            </AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -33,11 +38,15 @@ const UserNav = () => {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/profile">Profile</Link>
+          </DropdownMenuItem>
           <DropdownMenuItem>Settings</DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Log out</DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <button onClick={() => signOut()}>Log out</button>
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )

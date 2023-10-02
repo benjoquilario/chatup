@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { cn } from "@/lib/cn"
 import React from "react"
 import { buttonVariants } from "../ui/button"
 

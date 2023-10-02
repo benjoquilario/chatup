@@ -9,7 +9,7 @@ interface LayoutProps {
 export default async function Layout({ children }: LayoutProps) {
   return (
     <Section>
-          <UserList />
+      <UserList />
       {children}
     </Section>
   )

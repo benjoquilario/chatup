@@ -1,4 +1,5 @@
 "use client"
+import { saveConversations } from "@/app/actions"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/cn"
@@ -23,7 +24,13 @@ export default function UserItem({ user }: UserItemProps) {
   return (
     <Button
       className={cn("h-[3.25rem] w-full px-4 py-2")}
-      onClick={handleOnClick}
+      onClick={async () => {
+        const response = await saveConversations({ userId: user.id })
+
+        if (response) {
+          router.push(`/conversation/${response.id}`)
+        }
+      }}
       variant="ghost"
       size="lg"
     >

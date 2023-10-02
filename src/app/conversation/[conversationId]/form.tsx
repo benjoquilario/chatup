@@ -1,20 +1,22 @@
 "use client"
 
-import { HiPaperAirplane } from "react-icons/hi2"
+import axios from "axios"
+import { CldUploadButton } from "next-cloudinary"
+import { HiPaperAirplane, HiPhoto } from "react-icons/hi2"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import useConversation from "@/lib/hooks/useConversation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import React, { useEffect, useRef } from "react"
-import { sendMessage } from "@/app/actions"
+import React, { useEffect, useRef, useState } from "react"
 
 type FormData = {
   message: string
 }
 
-export default function ChatForm() {
+export function ChatForm() {
   const buttonRef = useRef<HTMLButtonElement | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
   const { conversationId } = useConversation()
 
   const {
@@ -22,23 +24,43 @@ export default function ChatForm() {
     handleSubmit,
     setValue,
     setFocus,
-    formState: { isSubmitting },
+    watch,
+    reset,
+    formState: { errors, isSubmitSuccessful },
   } = useForm<FormData>({
     defaultValues: {
       message: "",
     },
   })
 
+  const messageText = watch("message")
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset()
+    }
+  }, [isSubmitSuccessful, reset])
+
   useEffect(() => {
     setFocus("message")
   }, [setFocus])
 
   async function handleOnSubmit(data: FormData) {
-    setValue("message", "", { shouldValidate: true })
-    await sendMessage({
-      message: data.message,
-      conversationId: conversationId as string,
-    })
+    setIsLoading(true)
+
+    try {
+      setValue("message", "", { shouldValidate: true })
+      const res = await axios.post("/api/messages", {
+        ...data,
+        conversationId: conversationId,
+      })
+
+      if (res.status === 200) setIsLoading(false)
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -54,13 +76,13 @@ export default function ChatForm() {
         >
           <div className="relative w-full">
             <Input
-              className="flex text-white"
+              className="flex text-muted-foreground"
               placeholder="Write a message..."
               {...register("message", { required: false })}
             />
           </div>
           <Button
-            disabled={isSubmitting}
+            disabled={isLoading}
             type="submit"
             variant="ghost"
             ref={buttonRef}

@@ -36,14 +36,20 @@ export default function ChatHeader({ conversation }: ChatHeaderProps) {
     <div className="flex w-full items-center justify-between border-b border-border bg-background px-4 py-3 shadow sm:px-4 lg:px-6">
       <div className="flex items-center gap-2">
         <Avatar className="h-10 w-10">
-          <AvatarImage src="/images/placeholder.jpg" />
-          <AvatarFallback>CN</AvatarFallback>
+          <AvatarImage
+            src={session.data?.user?.image || "/images/placeholder.jpg"}
+          />
+          <AvatarFallback>
+            <div className="h-full w-full animate-pulse"></div>
+          </AvatarFallback>
         </Avatar>
         <div>
-          <h3 className="font-heading font-medium capitalize leading-tight">
+          <h3 className="font-heading text-sm font-medium capitalize leading-tight md:text-base">
             {conversation.name || conversationPartner?.name}
           </h3>
-          <p className="text-xs font-light text-accent-foreground">Offline</p>
+          <p className="text-xs font-light text-accent-foreground">
+            {statusText}
+          </p>
         </div>
       </div>
       <div className="flex gap-3">

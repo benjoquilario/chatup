@@ -1,14 +1,15 @@
 "use client"
-import { useEffect, useRef, useState } from "react"
+
 import type { FullMessage } from "@/types/typings"
 import { useSession } from "next-auth/react"
 import { cn } from "@/lib/cn"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import ChatForm from "./chat-form"
 import { pusherClient } from "@/lib/pusher"
 import { format } from "date-fns"
 import find from "lodash.find"
 import useConversation from "@/lib/hooks/useConversation"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useEffect, useRef, useState } from "react"
 
 interface ChatBodyProps {
   initialMessages?: FullMessage[]
@@ -25,7 +26,7 @@ export default function ChatBody({
   const { conversationId } = useConversation()
 
   useEffect(() => {
-    pusherClient.subscribe(conversationId)
+    pusherClient.subscribe(conversationId as string)
     bottomRef?.current?.scrollIntoView()
 
     function messageHandler(message: FullMessage) {
@@ -55,7 +56,7 @@ export default function ChatBody({
     pusherClient.bind("messages:new", messageHandler)
     pusherClient.bind("message:update", updateMessageHandler)
     return () => {
-      pusherClient.unsubscribe(conversationId)
+      pusherClient.unsubscribe(conversationId as string)
       pusherClient.unbind("messages:new", messageHandler)
       pusherClient.unbind("message:update", updateMessageHandler)
     }
@@ -89,7 +90,7 @@ export default function ChatBody({
                     "bg-muted": !isCurrentUser,
                   })}
                 >
-                  <p>{message.body}</p>
+                  <p className="text-xs md:text-sm">{message.body}</p>
                   <div
                     className={cn("mt-2 text-xs", {
                       "text-primary-foreground/90": isCurrentUser,

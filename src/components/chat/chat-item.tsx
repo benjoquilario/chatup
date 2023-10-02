@@ -87,12 +87,11 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
         </div>
         <div className="flex flex-col items-center">
           <span className="mb-1 text-xs font-light text-[#ebeffc]">
-            {/* {format(new Date(lastMessage.createdAt), 'p')} */}
-            15 min ago
+            {format(new Date(conversation.createdAt), "p")}
           </span>
-          <span className="flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-xs font-semibold text-white">
+          {/* <span className="flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-xs font-semibold text-white">
             6
-          </span>
+          </span> */}
         </div>
       </div>
     </Link>

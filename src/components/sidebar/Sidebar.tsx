@@ -4,15 +4,10 @@ import useRoutes from "@/lib/hooks/useRoutes"
 import DesktopItem from "./desktop-item"
 import Link from "next/link"
 import { MessagesSquare } from "lucide-react"
-import { buttonVariants } from "../ui/button"
 import ThemeToggle from "../theme-toggle"
 import UserNav from "../user-nav"
 
-interface SidebarProps {
-  children?: React.ReactNode
-}
-
-export default function Sidebar({ children }: SidebarProps) {
+export default function Sidebar() {
   const routes = useRoutes()
 
   return (
@@ -30,14 +25,13 @@ export default function Sidebar({ children }: SidebarProps) {
               href={route.href}
               label={route.label}
               active={route.active}
-              onClick={route.onClick}
               icon={route.icon}
             />
           ))}
         </ul>
       </nav>
       <nav
-        aria-label="Avatar"
+        aria-label="avatar"
         className="mt-4 flex flex-col items-center justify-between space-y-3"
       >
         <ThemeToggle />
