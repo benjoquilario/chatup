@@ -2,12 +2,6 @@
 
 import Section from "@/components/shared/section"
 
-interface LayoutProps {
-  children: React.ReactNode
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return <Section>{children}</Section>
 }
-
-export default Layout
