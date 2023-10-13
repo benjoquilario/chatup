@@ -2,6 +2,10 @@
 
 import Section from "@/components/shared/section"
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function ConversationsLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return <Section>{children}</Section>
 }

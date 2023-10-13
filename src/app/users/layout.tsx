@@ -7,7 +7,7 @@ interface LayoutProps {
   children: React.ReactNode
 }
 
-export default function Layout({ children }: LayoutProps) {
+export default function UsersLayout({ children }: LayoutProps) {
   return (
     <Section>
       <UserList />
