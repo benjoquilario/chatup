@@ -1,12 +1,13 @@
 "use client"
+
 import { useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { BsPersonFill } from "react-icons/bs"
 import { BiDotsVerticalRounded } from "react-icons/bi"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { cn } from "@/lib/cn"
 import type { Conversation, User } from "@prisma/client"
 import { useSession } from "next-auth/react"
+import useConversationStore from "@/store/conversation"
 
 interface ChatHeaderProps {
   conversation: Conversation & {
@@ -15,6 +16,10 @@ interface ChatHeaderProps {
 }
 
 export default function ChatHeader({ conversation }: ChatHeaderProps) {
+  const [openConversationInfo, setOpenConversationInfo] = useConversationStore(
+    (store) => [store.openConversationInfo, store.setOpenConversationInfo]
+  )
+
   const session = useSession()
   const statusText = useMemo(
     () =>
@@ -31,6 +36,10 @@ export default function ChatHeader({ conversation }: ChatHeaderProps) {
       ),
     [session.data?.user?.email, conversation]
   )
+
+  const toggleConversationInfo = () => {
+    setOpenConversationInfo(!openConversationInfo)
+  }
 
   return (
     <div className="flex w-full items-center justify-between border-b border-border bg-background px-4 py-3 shadow sm:px-4 lg:px-6">
@@ -53,13 +62,18 @@ export default function ChatHeader({ conversation }: ChatHeaderProps) {
         </div>
       </div>
       <div className="flex gap-3">
-        <Button variant="ghost" size="sm">
+        <Button variant="ghost" size="sm" aria-label="profile">
           <BsPersonFill
             className="h-5 w-5 shrink-0 text-accent-foreground"
             aria-hidden="true"
           />
         </Button>
-        <Button variant="ghost" size="sm">
+        <Button
+          onClick={toggleConversationInfo}
+          variant="ghost"
+          aria-label="conversation information"
+          size="sm"
+        >
           <BiDotsVerticalRounded
             className="h-5 w-5 shrink-0 text-accent-foreground"
             aria-hidden="true"

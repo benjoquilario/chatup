@@ -3,6 +3,7 @@
 import getCurrentUser from "@/utils/getCurrentUser"
 import db from "@/lib/db"
 import { pusherServer } from "@/lib/pusher"
+import { revalidatePath } from "next/cache"
 
 interface SaveConversations {
   userId: string
@@ -190,4 +191,66 @@ export async function sendMessage({ message, conversationId }: SendMessage) {
     console.log(error, "ERROR_MESSAGES")
     throw new Error("Error")
   }
+}
+
+type DeleteMessage = {
+  messageId: string
+  conversationId: string
+}
+
+export async function deleteMessage({
+  messageId,
+  conversationId,
+}: DeleteMessage) {
+  const currentUser = await getCurrentUser()
+
+  if (!currentUser?.id || !currentUser?.email) {
+    throw new Error("Unauthorized")
+  }
+
+  const updatedMessage = await db.message.update({
+    where: {
+      id: messageId,
+    },
+    data: {
+      isDeleted: true,
+      body: "",
+      deletedAt: new Date(),
+    },
+    include: {
+      sender: true,
+      seen: true,
+    },
+  })
+
+  await pusherServer.trigger(conversationId!, "message:update", updatedMessage)
+}
+
+type EditMessage = {
+  id: string
+  body: string
+  conversationId: string
+}
+
+export async function editMessage({ id, body, conversationId }: EditMessage) {
+  const currentUser = await getCurrentUser()
+
+  if (!currentUser?.id || !currentUser?.email) {
+    throw new Error("Unauthorized")
+  }
+
+  const updatedMessage = await db.message.update({
+    where: {
+      id,
+    },
+    data: {
+      body,
+    },
+    include: {
+      sender: true,
+      seen: true,
+    },
+  })
+
+  await pusherServer.trigger(conversationId!, "message:update", updatedMessage)
 }

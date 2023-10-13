@@ -1,4 +1,4 @@
-import AuthForm from "@/components/form/auth-form"
+import AuthForm from "@/components/auth-form"
 import {
   Card,
   CardDescription,
@@ -12,7 +12,9 @@ const Login = () => {
       <Card className="w-[450px]">
         <CardHeader>
           <CardTitle className="text-2xl">Welcome to Chatty!</CardTitle>
-          <CardDescription>Enter your email and password to login.</CardDescription>
+          <CardDescription>
+            Enter your email and password to login.
+          </CardDescription>
         </CardHeader>
         <AuthForm type="login" />
       </Card>

@@ -5,11 +5,11 @@ import { useSession } from "next-auth/react"
 import { cn } from "@/lib/cn"
 import ChatForm from "./chat-form"
 import { pusherClient } from "@/lib/pusher"
-import { format } from "date-fns"
 import find from "lodash.find"
 import useConversation from "@/lib/hooks/useConversation"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useEffect, useRef, useState } from "react"
+import MessageItem from "../message-item"
+import useMessageStore from "@/store/message"
 
 interface ChatBodyProps {
   initialMessages?: FullMessage[]
@@ -24,6 +24,7 @@ export default function ChatBody({
   const bottomRef = useRef<HTMLDivElement>(null)
   const session = useSession()
   const { conversationId } = useConversation()
+  const selectedMessage = useMessageStore((store) => store.selectedMessage)
 
   useEffect(() => {
     pusherClient.subscribe(conversationId as string)
@@ -72,34 +73,11 @@ export default function ChatBody({
               message.sender.email === session.data?.user?.email
 
             return (
-              <div
+              <MessageItem
                 key={message.id}
-                className={cn("flex w-full items-end gap-2 p-3", {
-                  "justify-end": isCurrentUser,
-                })}
-              >
-                <div className={cn(isCurrentUser && "order-2")}>
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src="/images/placeholder.jpg" />
-                    <AvatarFallback>CN</AvatarFallback>
-                  </Avatar>
-                </div>
-                <div
-                  className={cn("rounded-lg p-3 text-sm shadow-md", {
-                    "bg-primary text-primary-foreground": isCurrentUser,
-                    "bg-muted": !isCurrentUser,
-                  })}
-                >
-                  <p className="text-xs md:text-sm">{message.body}</p>
-                  <div
-                    className={cn("mt-2 text-xs", {
-                      "text-primary-foreground/90": isCurrentUser,
-                    })}
-                  >
-                    {format(new Date(message.createdAt), "p")}
-                  </div>
-                </div>
-              </div>
+                message={message}
+                isCurrentUser={isCurrentUser}
+              />
             )
           })}
           <div ref={bottomRef} className="pt-24"></div>

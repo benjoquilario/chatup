@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form"
 import useConversation from "@/lib/hooks/useConversation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import React, { useEffect, useRef } from "react"
-import { sendMessage } from "@/app/actions"
+import { editMessage, sendMessage } from "@/app/actions"
+import useMessageStore from "@/store/message"
 
 type FormData = {
   message: string
@@ -16,6 +17,14 @@ type FormData = {
 export default function ChatForm() {
   const buttonRef = useRef<HTMLButtonElement | null>(null)
   const { conversationId } = useConversation()
+  const [isEditing, setIsEditing] = useMessageStore((store) => [
+    store.isEditing,
+    store.setIsEditing,
+  ])
+  const [selectedMessage, setSelectedMessage] = useMessageStore((store) => [
+    store.selectedMessage,
+    store.setSelectedMessage,
+  ])
 
   const {
     register,
@@ -35,11 +44,32 @@ export default function ChatForm() {
 
   async function handleOnSubmit(data: FormData) {
     setValue("message", "", { shouldValidate: true })
-    await sendMessage({
-      message: data.message,
-      conversationId: conversationId as string,
+
+    if (isEditing && data.message.length !== 0) {
+      await editMessage({
+        id: selectedMessage.id,
+        body: data.message,
+        conversationId: conversationId as string,
+      })
+      setIsEditing(false)
+    } else {
+      await sendMessage({
+        message: data.message,
+        conversationId: conversationId as string,
+      })
+    }
+
+    setSelectedMessage({
+      id: "",
+      body: "",
     })
   }
+
+  useEffect(() => {
+    if (isEditing && selectedMessage.id) {
+      setValue("message", selectedMessage.body)
+    }
+  }, [isEditing, selectedMessage, setValue, setFocus])
 
   return (
     <div className="z-100 w-full border-t border-border bg-background p-3 lg:p-4">

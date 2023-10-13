@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { userAuthSchema } from "@/lib/validations/auth"
 import React, { useCallback, useState } from "react"
-import { CardContent, CardFooter } from "../ui/card"
+import { CardContent, CardFooter } from "./ui/card"
 
 interface AuthFormProps {
   type: "login" | "register"
