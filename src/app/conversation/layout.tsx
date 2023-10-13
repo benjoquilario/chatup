@@ -1,11 +1,11 @@
-"use client"
-
 import Section from "@/components/shared/section"
+
+interface ConversationsLayoutProps {
+  children: React.ReactNode
+}
 
 export default function ConversationsLayout({
   children,
-}: {
-  children: React.ReactNode
-}) {
+}: ConversationsLayoutProps) {
   return <Section>{children}</Section>
 }
