@@ -1,5 +1,3 @@
-"use client"
-
 import Section from "@/components/shared/section"
 import UserList from "@/components/users/user-list"
 
