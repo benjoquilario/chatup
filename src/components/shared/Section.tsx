@@ -1,7 +1,5 @@
-"use client"
-
 import Sidebar from "@/components/sidebar/sidebar"
-import MobileFooter from "../sidebar/mobile-footer"
+import MobileFooter from "@/components/sidebar/mobile-footer"
 
 const Section = ({ children }: { children: React.ReactNode }) => (
   <div className="h-full">
