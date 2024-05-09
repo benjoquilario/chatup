@@ -49,7 +49,7 @@ export async function saveConversations({
         },
       })
 
-      createConversation.users.forEach((user) => {
+      createConversation.users.forEach((user: any) => {
         if (user.email) {
           pusherServer.trigger(
             user.email,
@@ -103,7 +103,7 @@ export async function saveConversations({
       },
     })
 
-    createConversation.users.map((user) => {
+    createConversation.users.map((user: any) => {
       if (user.email) {
         pusherServer.trigger(user.email, "conversation:new", createConversation)
       }
@@ -179,7 +179,7 @@ export async function sendMessage({ message, conversationId }: SendMessage) {
     const lastMessage =
       updatedConversation.messages[updatedConversation.messages.length - 1]
 
-    updatedConversation.users.map((user) => {
+    updatedConversation.users.map((user: any) => {
       pusherServer.trigger(user.email!, "conversation:update", {
         id: conversationId,
         messages: [lastMessage],

@@ -1,12 +1,12 @@
 import localFont from "next/font/local"
 import "./globals.css"
-import { Inter as FontSans } from "next/font/google"
+import {Inter} from "next/font/google"
 import AuthContext from "@/components/auth-context"
 import Provider from "@/components/provider"
 import { cn } from "@/lib/cn"
 import ThemeProvider from "@/components/theme-provider"
 
-const fontSans = FontSans({
+const fontSans = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
 })
