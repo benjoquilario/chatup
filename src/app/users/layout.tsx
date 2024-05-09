@@ -1,7 +1,7 @@
 'use client'
 
 import UserList from "@/components/users/user-list"
-import Sidebar from "@/components/sidebar/sidebar"
+import Sidebar from "../../components/sidebar/sidebar"
 import MobileFooter from "@/components/sidebar/mobile-footer"
 
 interface LayoutProps {
