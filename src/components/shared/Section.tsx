@@ -1,6 +1,6 @@
 "use client"
 
-import Sidebar from "@/components/sidebar/sidebar"
+import Sidebar from "@/components/sidebar"
 import MobileFooter from "@/components/sidebar/mobile-footer"
 
 export default function Section({ children }: { children: React.ReactNode }) {

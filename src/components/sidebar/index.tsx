@@ -24,7 +24,7 @@ const routes = [
       }
     ]
 
-export default function Sidebar() {
+const Sidebar = () => {
   const segment = useSelectedLayoutSegment()
 
   return (
@@ -57,3 +57,6 @@ export default function Sidebar() {
     </div>
   )
 }
+
+
+export default Sidebar
