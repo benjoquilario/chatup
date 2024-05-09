@@ -1,15 +1,31 @@
 "use client"
 
-import useRoutes from "@/lib/hooks/useRoutes"
+
 import DesktopItem from "./desktop-item"
 import Link from "next/link"
-import { MessagesSquare } from "lucide-react"
 import ThemeToggle from "../theme-toggle"
 import { BiSolidChat } from "react-icons/bi"
 import UserNav from "../user-nav"
+import { HiChat, HiUsers } from "react-icons/hi"
+import { useSelectedLayoutSegment } from "next/navigation"
+
+
+const routes = [
+      {
+        label: "Conversation",
+        href: "/conversation",
+        icon: HiChat,
+        
+      },
+      {
+        label: "Users",
+        href: "/users",
+        icon: HiUsers,
+      }
+    ]
 
 export default function Sidebar() {
-  const routes = useRoutes()
+  const segment = useSelectedLayoutSegment()
 
   return (
     <div className="hidden items-center justify-between overflow-x-hidden border-r border-border lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:flex lg:w-16 lg:flex-col lg:overflow-y-auto lg:px-3 lg:pb-4 xl:px-6">
@@ -25,7 +41,7 @@ export default function Sidebar() {
               key={route.label}
               href={route.href}
               label={route.label}
-              active={route.active}
+              active={route.href.startsWith(`/${segment}`)}
               icon={route.icon}
             />
           ))}
