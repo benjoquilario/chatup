@@ -6,7 +6,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { createConversation } from "@/app/actions"
 import type { User } from "@prisma/client"
 import { useRouter } from "next/navigation"
-import axios from "axios"
 import { startHolyLoader, stopHolyLoader } from "holy-loader"
 import { FullConversation } from "@/types/types"
 
