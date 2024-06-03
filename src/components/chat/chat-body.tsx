@@ -1,30 +1,23 @@
 "use client"
 
-import type { FullMessage } from "@/types/typings"
+import { useRef, useEffect, useState } from "react"
+import MessageItem from "../message/message-item"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import useConversation from "@/lib/hooks/useConversation"
 import { useSession } from "next-auth/react"
-import { cn } from "@/lib/cn"
-import ChatForm from "./chat-form"
 import { pusherClient } from "@/lib/pusher"
 import find from "lodash.find"
-import useConversation from "@/lib/hooks/useConversation"
-import { useEffect, useRef, useState } from "react"
-import MessageItem from "../message-item"
-import useMessageStore from "@/store/message"
+import type { FullMessage } from "@/types/types"
 
 interface ChatBodyProps {
   initialMessages?: FullMessage[]
-  children: React.ReactNode
 }
 
-export default function ChatBody({
-  initialMessages = [],
-  children,
-}: ChatBodyProps) {
+const ChatBody = ({ initialMessages = [] }: ChatBodyProps) => {
   const [messages, setMessages] = useState(initialMessages)
   const bottomRef = useRef<HTMLDivElement>(null)
   const session = useSession()
   const { conversationId } = useConversation()
-  const selectedMessage = useMessageStore((store) => store.selectedMessage)
 
   useEffect(() => {
     pusherClient.subscribe(conversationId as string)
@@ -64,26 +57,27 @@ export default function ChatBody({
   }, [conversationId])
 
   return (
-    <div className="h-full lg:pl-[375px]">
+    <div className="flex-1">
       <div className="flex h-full flex-col">
-        {children}
-        <div className="flex-1 overflow-y-auto">
-          {messages.map((message) => {
-            const isCurrentUser =
-              message.sender.email === session.data?.user?.email
+        <div className="max-h-[530px] overflow-auto">
+          <div className="flex flex-col p-2">
+            {messages.map((message) => {
+              const isCurrentUser = message.senderId === session.data?.user?.id
 
-            return (
-              <MessageItem
-                key={message.id}
-                message={message}
-                isCurrentUser={isCurrentUser}
-              />
-            )
-          })}
+              return (
+                <MessageItem
+                  message={message}
+                  isCurrentUser={isCurrentUser}
+                  key={message.id}
+                />
+              )
+            })}
+          </div>
           <div ref={bottomRef} className="pt-24"></div>
         </div>
-        <ChatForm />
       </div>
     </div>
   )
 }
+
+export default ChatBody

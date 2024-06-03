@@ -16,7 +16,7 @@ const Login = () => {
             Enter your email and password to login.
           </CardDescription>
         </CardHeader>
-        <AuthForm type="login" />
+        <AuthForm authType="login" />
       </Card>
     </div>
   )

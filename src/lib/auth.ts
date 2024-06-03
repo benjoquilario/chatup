@@ -1,13 +1,20 @@
-import { NextAuthOptions } from "next-auth"
+import { DefaultSession } from "next-auth"
+
 import bcrypt from "bcrypt"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import GoogleProvider from "next-auth/providers/google"
-import GithubProvider from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials"
-import { credentialsValidator } from "@/lib/validations/credentials"
+import { credentialsValidator } from "./validations/credentials"
 import db from "./db"
 
-export const authOptions: NextAuthOptions = {
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string
+    } & DefaultSession["user"]
+  }
+}
+
+const authOptions = {
   adapter: PrismaAdapter(db),
   providers: [
     CredentialsProvider({
@@ -18,7 +25,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials) {
         const cred = await credentialsValidator.parseAsync(credentials)
-        if (!cred.email || !cred?.password) {
+        if (!cred.email || !cred.password) {
           throw new Error("Invalid Credentials")
         }
 
@@ -28,7 +35,7 @@ export const authOptions: NextAuthOptions = {
           },
         })
 
-        if (!user || !user?.hashedPassword)
+        if (!user || !user.hashedPassword)
           throw new Error("Invalid Credentials")
 
         const isPasswordCorrect = await bcrypt.compare(
@@ -36,9 +43,14 @@ export const authOptions: NextAuthOptions = {
           user.hashedPassword
         )
 
-        if (!isPasswordCorrect) throw new Error("Invalid credentials")
+        if (!isPasswordCorrect) throw new Error("Invalid Credentials")
 
-        return user
+        return {
+          id: user.id,
+          image: user.image,
+          email: user.email,
+          name: user.name,
+        }
       },
     }),
   ],
@@ -48,3 +60,5 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 }
+
+export { authOptions }
