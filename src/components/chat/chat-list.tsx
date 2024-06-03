@@ -1,15 +1,15 @@
 "use client"
 
+import React, { useState, useMemo, useEffect } from "react"
+import { Plus } from "lucide-react"
+import ChatSearch from "./chat-search"
 import ChatItem from "./chat-item"
-import { Input } from "@/components/ui/input"
-import { useRouter } from "next/navigation"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import useConversation from "@/lib/hooks/useConversation"
 import { useSession } from "next-auth/react"
-import type { FullConversation } from "@/types/typings"
+import { useRouter } from "next/navigation"
+import type { FullConversation } from "@/types/types"
 import type { User } from "@prisma/client"
-
-import React, { useEffect, useMemo, useState } from "react"
-import ListContainer from "@/components/shared/list-container"
-import useChat from "@/lib/hooks/useConversation"
 import { pusherClient } from "@/lib/pusher"
 import find from "lodash.find"
 
@@ -23,12 +23,14 @@ export default function ChatList({ conversations, users }: ChatListProps) {
   const router = useRouter()
   const session = useSession()
 
-  const { conversationId, isOpen } = useChat()
+  const { conversationId, isOpen } = useConversation()
 
   const pusherKey = useMemo(
     () => session?.data?.user?.email,
     [session?.data?.user?.email]
   )
+
+  console.log(conversationId)
 
   useEffect(() => {
     if (!pusherKey) return
@@ -67,27 +69,40 @@ export default function ChatList({ conversations, users }: ChatListProps) {
     pusherClient.bind("conversation:update", updateHandler)
     pusherClient.bind("conversation:new", newHandler)
     pusherClient.bind("conversation:remove", removeHandler)
-  }, [pusherKey, router])
+  }, [pusherKey, router, conversationId])
 
   return (
-    <ListContainer listTitle="Messages">
-      <Input
-        type="search"
-        className="my-2 text-accent-foreground"
-        placeholder="Search user..."
-      />
-
-      {items.length > 0 ? (
-        items.map((conversation) => (
-          <ChatItem
-            key={conversation.id}
-            conversation={conversation}
-            selected={conversation.id === conversationId}
-          />
-        ))
-      ) : (
-        <p className="text-muted-foreground/80">Nothing to show here...</p>
-      )}
-    </ListContainer>
+    <div className="relative flex flex-col rounded-md p-3">
+      <div className="flex items-center justify-between pt-2">
+        <h3 className="text-lg font-semibold">Chats</h3>
+        <span className="rounded-full bg-primary p-2">
+          <Plus className="text-white" />
+        </span>
+      </div>
+      <div className="relative flex items-center gap-4 pt-4 text-xs">
+        <span className="relative font-semibold">
+          Direct
+          <span className="absolute size-2 rounded-full bg-destructive"></span>
+        </span>
+        <span className="text-muted-foreground/90">Groups</span>
+        <span className="text-muted-foreground/90">Public</span>
+      </div>
+      <ChatSearch />
+      <div className="max-h-[530px] overflow-auto">
+        <div className="flex flex-col p-2">
+          {items.length > 0 ? (
+            items.map((conversation) => (
+              <ChatItem
+                key={conversation.id}
+                conversation={conversation}
+                selected={conversation.id === conversationId}
+              />
+            ))
+          ) : (
+            <p className="text-muted-foreground/80">Nothing to show here...</p>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }

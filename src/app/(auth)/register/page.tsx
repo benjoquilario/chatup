@@ -16,7 +16,7 @@ const Register = () => {
             Enter your email below to create your account.
           </CardDescription>
         </CardHeader>
-        <AuthForm type="register" />
+        <AuthForm authType="register" />
       </Card>
     </div>
   )

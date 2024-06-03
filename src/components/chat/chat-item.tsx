@@ -1,13 +1,14 @@
 "use client"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import Link from "next/link"
-import type { FullConversation } from "@/types/typings"
+
+import React, { useMemo } from "react"
+import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/cn"
-import { format } from "date-fns"
+import Link from "next/link"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useSession } from "next-auth/react"
-import { useMemo } from "react"
-import { Skeleton } from "../ui/skeleton"
+import type { FullConversation } from "@/types/types"
+import { Skeleton } from "@/components/ui/skeleton"
+import { format } from "date-fns"
 
 interface ChatItemProps {
   conversation: FullConversation
@@ -51,8 +52,8 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
   return (
     <Link
       className={cn(
-        buttonVariants({ variant: "secondary", size: "lg" }),
-        "mb-2 h-[4.25rem] w-full rounded-sm bg-secondary/80 px-4 py-2",
+        buttonVariants({ variant: "ghost", size: "lg" }),
+        "mb-2 h-[4.25rem] w-full rounded-sm px-4 py-2 shadow-md",
         {
           "bg-primary text-primary-foreground hover:bg-primary/90": selected,
         }
@@ -60,7 +61,7 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
       href={`/conversation/${conversation.id}`}
     >
       <Avatar>
-        <AvatarImage src="/images/placeholder.jpg" />
+        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
         <AvatarFallback>
           <Skeleton className="h-12 w-12 rounded-full" />
         </AvatarFallback>
@@ -69,10 +70,7 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
         <div className="flex h-full flex-col items-start justify-between text-sm">
           <h3
             className={cn(
-              "font-heading text-[15px] font-medium capitalize tracking-tight",
-              {
-                "text-primary-foreground": selected,
-              }
+              "font-heading text-[15px] font-medium capitalize tracking-tight"
             )}
           >
             {conversationPartner?.name || conversation.name}
@@ -86,7 +84,7 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
           </span>
         </div>
         <div className="flex flex-col items-center">
-          <span className="mb-1 text-xs font-light text-[#ebeffc]">
+          <span className="mb-1 text-xs font-light text-muted-foreground/90">
             {format(new Date(conversation.createdAt), "p")}
           </span>
           {/* <span className="flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-xs font-semibold text-white">

@@ -1,23 +1,91 @@
 "use server"
 
-import getCurrentUser from "@/utils/getCurrentUser"
+import { getCurrentUser } from "@/lib/current-user"
 import db from "@/lib/db"
 import { pusherServer } from "@/lib/pusher"
-import { revalidatePath } from "next/cache"
+import { redirect } from "next/navigation"
 
-interface SaveConversations {
+export async function sendMessage({
+  message,
+  conversationId,
+}: {
+  message: string
+  conversationId: string
+}) {
+  try {
+    const currentUser = await getCurrentUser()
+
+    if (!currentUser?.id || !currentUser?.email) throw new Error("Unauthorized")
+
+    const newMessage = await db.message.create({
+      data: {
+        body: message,
+        conversation: {
+          connect: {
+            id: conversationId,
+          },
+        },
+        sender: {
+          connect: { id: currentUser.id },
+        },
+        seen: {
+          connect: {
+            id: currentUser.id,
+          },
+        },
+      },
+    })
+
+    const updatedConversation = await db.conversation.update({
+      where: {
+        id: conversationId,
+      },
+      data: {
+        lastMessageAt: new Date(),
+        messages: {
+          connect: {
+            id: newMessage.id,
+          },
+        },
+      },
+      include: {
+        users: true,
+        messages: {
+          include: {
+            seen: true,
+          },
+        },
+      },
+    })
+
+    await pusherServer.trigger(conversationId, "messages:new", newMessage)
+
+    const lastMessage =
+      updatedConversation.messages[updatedConversation.messages.length - 1]
+
+    updatedConversation.users.map((user) => {
+      pusherServer.trigger(user.email!, "conversation:update", {
+        id: conversationId,
+        messages: [lastMessage],
+      })
+    })
+
+    return newMessage
+  } catch (error) {
+    throw new Error("Error")
+  }
+}
+
+interface ICreateConversations {
   userId: string
   isGroup?: boolean
   members?: Array<{ value: string; label: string }>
   name?: string
 }
 
-export async function saveConversations({
-  userId,
-  isGroup,
-  members,
-  name,
-}: SaveConversations) {
+export async function createConversation(convo: ICreateConversations) {
+  const { userId, isGroup, members, name } = convo
+
   try {
     const currentUser = await getCurrentUser()
 
@@ -81,9 +149,7 @@ export async function saveConversations({
 
     const singleConversation = existingConversation[0]
 
-    if (singleConversation) {
-      return singleConversation
-    }
+    if (singleConversation) return singleConversation
 
     const createConversation = await db.conversation.create({
       data: {
@@ -103,7 +169,7 @@ export async function saveConversations({
       },
     })
 
-    createConversation.users.map((user: any) => {
+    createConversation.users.map((user) => {
       if (user.email) {
         pusherServer.trigger(user.email, "conversation:new", createConversation)
       }
@@ -111,146 +177,9 @@ export async function saveConversations({
 
     return createConversation
   } catch (error) {
-    console.log(error)
-    throw new Error("Internal Error")
-  }
-}
-
-interface SendMessage {
-  message: string
-  conversationId: string
-}
-
-export async function sendMessage({ message, conversationId }: SendMessage) {
-  try {
-    const currentUser = await getCurrentUser()
-
-    if (!currentUser?.id || !currentUser?.email) {
-      throw new Error("Unauthorized")
+    return {
+      message: "Internal Error",
+      status: 500,
     }
-
-    const newMessage = await db.message.create({
-      include: {
-        seen: true,
-        sender: true,
-      },
-      data: {
-        body: message,
-        conversation: {
-          connect: {
-            id: conversationId,
-          },
-        },
-        sender: {
-          connect: { id: currentUser.id },
-        },
-        seen: {
-          connect: {
-            id: currentUser.id,
-          },
-        },
-      },
-    })
-
-    const updatedConversation = await db.conversation.update({
-      where: {
-        id: conversationId,
-      },
-      data: {
-        lastMessageAt: new Date(),
-        messages: {
-          connect: {
-            id: newMessage.id,
-          },
-        },
-      },
-      include: {
-        users: true,
-        messages: {
-          include: {
-            seen: true,
-          },
-        },
-      },
-    })
-
-    await pusherServer.trigger(conversationId, "messages:new", newMessage)
-
-    const lastMessage =
-      updatedConversation.messages[updatedConversation.messages.length - 1]
-
-    updatedConversation.users.map((user: any) => {
-      pusherServer.trigger(user.email!, "conversation:update", {
-        id: conversationId,
-        messages: [lastMessage],
-      })
-    })
-
-    return newMessage
-  } catch (error) {
-    console.log(error, "ERROR_MESSAGES")
-    throw new Error("Error")
   }
-}
-
-type DeleteMessage = {
-  messageId: string
-  conversationId: string
-}
-
-export async function deleteMessage({
-  messageId,
-  conversationId,
-}: DeleteMessage) {
-  const currentUser = await getCurrentUser()
-
-  if (!currentUser?.id || !currentUser?.email) {
-    throw new Error("Unauthorized")
-  }
-
-  const updatedMessage = await db.message.update({
-    where: {
-      id: messageId,
-    },
-    data: {
-      isDeleted: true,
-      body: "",
-      deletedAt: new Date(),
-    },
-    include: {
-      sender: true,
-      seen: true,
-    },
-  })
-
-  await pusherServer.trigger(conversationId!, "message:update", updatedMessage)
-}
-
-type EditMessage = {
-  id: string
-  body: string
-  conversationId: string
-}
-
-export async function editMessage({ id, body, conversationId }: EditMessage) {
-  const currentUser = await getCurrentUser()
-
-  if (!currentUser?.id || !currentUser?.email) {
-    throw new Error("Unauthorized")
-  }
-
-  const updatedMessage = await db.message.update({
-    where: {
-      id,
-    },
-    data: {
-      body,
-    },
-    include: {
-      sender: true,
-      seen: true,
-    },
-  })
-
-  await pusherServer.trigger(conversationId!, "message:update", updatedMessage)
 }

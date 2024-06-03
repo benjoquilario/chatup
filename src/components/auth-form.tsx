@@ -1,28 +1,29 @@
 "use client"
+
+import { Label } from "./ui/label"
+import { Button } from "./ui/button"
+import { CardContent, CardFooter } from "./ui/card"
+import { Input } from "@/components/ui/input"
+import Link from "next/link"
 import { FiGithub } from "react-icons/fi"
 import { AiOutlineGoogle } from "react-icons/ai"
-import { useForm, type SubmitHandler } from "react-hook-form"
-import axios from "axios"
-import { signIn, useSession } from "next-auth/react"
-import { toast } from "react-hot-toast"
 import { useRouter } from "next/navigation"
+import { useForm, type SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import * as z from "zod"
-import Link from "next/link"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
 import { userAuthSchema } from "@/lib/validations/auth"
-import React, { useCallback, useState } from "react"
-import { CardContent, CardFooter } from "./ui/card"
+import * as z from "zod"
+import axios from "axios"
+import { toast } from "sonner"
+
+import React, { useState } from "react"
+import { signIn } from "next-auth/react"
 
 interface AuthFormProps {
-  type: "login" | "register"
+  authType: "login" | "register"
 }
-
 type FormData = z.infer<typeof userAuthSchema>
 
-export default function AuthForm({ type }: AuthFormProps) {
+const AuthForm = ({ authType }: AuthFormProps) => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
@@ -34,40 +35,33 @@ export default function AuthForm({ type }: AuthFormProps) {
     resolver: zodResolver(userAuthSchema),
   })
 
-  function handleOnSubmit(data: FormData) {
+  async function handleOnSubmit(data: FormData) {
     setIsLoading(true)
 
-    try {
-      if (type === "register") {
-        axios
-          .post("/api/register", {
-            ...data,
-          })
-          .then((res) => {
-            if (res.status === 200) {
-              toast.success("Account created! Redirecting to login...")
-              setTimeout(() => router.push("/login"), 2000)
-            }
-          })
-          .catch(() => toast.error("Something went wrong!"))
-          .finally(() => setIsLoading(false))
-      } else {
-        signIn("credentials", {
-          ...data,
-          redirect: false,
-        }).then((res) => {
-          if (res?.ok) {
-            router.refresh()
+    if (authType === "register") {
+      const response = await axios.post("/api/register", {
+        ...data,
+      })
 
-            router.push("/conversation")
-          } else {
-            setIsLoading(false)
-            toast.error("Invalid credentials")
-          }
-        })
+      if (response.status === 200) {
+        toast.success("Account created! Redirecting to login...")
+        setTimeout(() => router.push("/login"), 1000)
+      } else {
+        toast.error("Something went wrong!")
       }
-    } catch (error) {
-      console.log(error)
+
+      setIsLoading(false)
+    } else {
+      const response = await signIn("credentials", { ...data, redirect: false })
+
+      if (response?.ok) {
+        router.refresh()
+
+        router.push("/conversation")
+      } else {
+        setIsLoading(false)
+        toast.error("Invalid credentials")
+      }
     }
   }
 
@@ -75,12 +69,12 @@ export default function AuthForm({ type }: AuthFormProps) {
     <React.Fragment>
       <CardContent className="grid gap-4">
         <div className="grid w-full grid-cols-2 gap-3">
-          <Button variant="outline">
-            <AiOutlineGoogle aria-hidden="true" className="mr-2 h-4 w-4" />
+          <Button variant="outline" disabled={isLoading}>
+            <AiOutlineGoogle aria-hidden="true" className="mr-2 size-4" />
             Google
           </Button>
-          <Button variant="outline">
-            <FiGithub aria-hidden="true" className="mr-2 h-4 w-4" />
+          <Button variant="outline" disabled={isLoading}>
+            <FiGithub aria-hidden="true" className="mr-2 size-4" />
             Github
           </Button>
         </div>
@@ -94,8 +88,9 @@ export default function AuthForm({ type }: AuthFormProps) {
             </span>
           </div>
         </div>
+
         <form className="grid gap-4" onSubmit={handleSubmit(handleOnSubmit)}>
-          {type === "register" && (
+          {authType === "register" && (
             <div className="grid gap-2">
               <Label htmlFor="name">Name</Label>
               <Input
@@ -133,25 +128,27 @@ export default function AuthForm({ type }: AuthFormProps) {
             />
           </div>
           <Button className="w-full" disabled={isLoading} type="submit">
-            {type === "login" ? "Sign In" : "Create an account"}
+            {authType === "login" ? "Sign In" : "Create an account"}
           </Button>
         </form>
       </CardContent>
       <CardFooter className="grid gap-1.5">
         <div className="mt-2 text-left text-sm">
           <span className="text-muted-foreground">
-            {type === "login"
+            {authType === "login"
               ? `Don't have an account?`
               : "Already have an account?"}
           </span>
           <Link
-            href={type === "login" ? "/register" : "login"}
+            href={authType === "login" ? "/register" : "login"}
             className="ml-1 text-muted-foreground underline transition duration-200 ease-in-out hover:text-primary"
           >
-            {type === "login" ? "Register" : "Login"}
+            {authType === "login" ? "Register" : "Login"}
           </Link>
         </div>
       </CardFooter>
     </React.Fragment>
   )
 }
+
+export default AuthForm
