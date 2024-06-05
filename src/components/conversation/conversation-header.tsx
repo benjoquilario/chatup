@@ -1,24 +1,44 @@
 "use client"
 
 import { useMemo } from "react"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { BsPersonFill } from "react-icons/bs"
 import { BiDotsVerticalRounded } from "react-icons/bi"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-// import type { Conversation, User } from "@prisma/client"
+import type { Conversation, User } from "@prisma/client"
 import { useSession } from "next-auth/react"
 // import useConversationStore from "@/store/conversation"
+import { IoMdArrowRoundBack } from "react-icons/io"
+import Link from "next/link"
 
-// interface ChatHeaderProps {
-//   conversation: Conversation & {
-//     users: User[]
-//   }
-// }
+type ConversationHeaderProps = {
+  conversation: Conversation & {
+    users: User[]
+  }
+}
 
-export default function ConversationHeader() {
+export default function ConversationHeader({
+  conversation,
+}: ConversationHeaderProps) {
+  const session = useSession()
+  const partner = useMemo(
+    () => conversation.users.find((user) => user.id !== session.data?.user.id),
+    [conversation, session]
+  )
+
   return (
-    <div className="flex w-full items-center justify-between bg-background px-4 py-3 sm:px-4 lg:px-6">
-      <div className="flex items-center gap-2">
+    <div className="flex w-full items-center justify-between px-0 py-3 sm:px-4 lg:px-6">
+      <div className="flex items-center gap-2 ">
+        <Link
+          href="/conversation"
+          className={buttonVariants({
+            variant: "ghost",
+            size: "icon",
+            className: "text-primary",
+          })}
+        >
+          <IoMdArrowRoundBack className="h-5 w-5" />
+        </Link>
         <Avatar className="size-10">
           <AvatarImage src="https://github.com/shadcn.png" alt="" />
           <AvatarFallback>
@@ -27,7 +47,7 @@ export default function ConversationHeader() {
         </Avatar>
         <div>
           <h3 className="font-heading text-sm font-medium capitalize leading-tight md:text-base">
-            Benjo Quilario
+            {partner?.name}
           </h3>
           <p className="text-xs font-light text-accent-foreground">
             <span className="size-2 bg-green-500"></span>Active

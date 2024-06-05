@@ -5,10 +5,10 @@ export default async function Suggestions() {
   const users = await getUsers()
 
   return (
-    <div className="hidden w-[30rem] md:block">
-      <div className="flex flex-col">
-        <h2 className="mb-4">Suggestion</h2>
-        <div className="max-h-[400px] overflow-auto">
+    <div className="mt-8 h-full w-full md:w-96">
+      <div className="flex h-full w-full flex-col px-4 md:w-96">
+        <h2 className="mb-4 text-lg font-medium">Suggestion</h2>
+        <div className="max-h-[400px] w-full overflow-auto">
           <div className="flex flex-col gap-2">
             {users.map((user) => (
               <SuggestionsItem user={user} key={user.id} />

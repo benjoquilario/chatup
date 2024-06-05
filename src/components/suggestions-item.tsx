@@ -19,40 +19,38 @@ const SuggestionsItem = ({ user }: SuggestionsItemProps) => {
   const router = useRouter()
 
   return (
-    <div className="flex items-center gap-2">
-      <div>
+    <div
+      // disabled={isPending}
+      onClick={() => {
+        startTransition(async () => {
+          const response = (await createConversation({
+            userId: user.id,
+          })) as FullConversation
+
+          try {
+            startHolyLoader()
+            router.push(`/conversation/${response.id}`)
+          } catch (error) {
+            stopHolyLoader()
+          } finally {
+            stopHolyLoader()
+          }
+        })
+      }}
+      className="flex cursor-pointer items-center justify-between rounded-md p-2 hover:bg-secondary"
+    >
+      <div className="flex items-center gap-1">
         <Avatar className="size-10">
           <AvatarImage src={"https://github.com/shadcn.png"} alt="" />
           <AvatarFallback>
             <div className="size-full animate-pulse"></div>
           </AvatarFallback>
         </Avatar>
+        <div className="ml-2 flex flex-col gap-1">
+          <h4>{user.name}</h4>
+          <p className="text-xs text-muted-foreground/70">2 mutual</p>
+        </div>
       </div>
-      <div className="flex flex-col gap-1">
-        <h4>{user.name}</h4>
-        <p className="text-xs text-muted-foreground/70">2 mutual</p>
-      </div>
-      <Button
-        disabled={isPending}
-        onClick={() => {
-          startTransition(async () => {
-            const response = (await createConversation({
-              userId: user.id,
-            })) as FullConversation
-
-            try {
-              startHolyLoader()
-              router.push(`/conversation/${response.id}`)
-            } catch (error) {
-              stopHolyLoader()
-            } finally {
-              stopHolyLoader()
-            }
-          })
-        }}
-      >
-        Add
-      </Button>
     </div>
   )
 }

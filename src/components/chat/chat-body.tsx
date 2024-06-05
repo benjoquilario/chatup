@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react"
 import { pusherClient } from "@/lib/pusher"
 import find from "lodash.find"
 import type { FullMessage } from "@/types/types"
+import { AnimatePresence, motion } from "framer-motion"
 
 interface ChatBodyProps {
   initialMessages?: FullMessage[]
@@ -57,25 +58,38 @@ const ChatBody = ({ initialMessages = [] }: ChatBodyProps) => {
   }, [conversationId])
 
   return (
-    <div className="flex-1">
-      <div className="flex h-full flex-col">
-        <div className="max-h-[530px] overflow-auto">
-          <div className="flex flex-col p-2">
-            {messages.map((message) => {
-              const isCurrentUser = message.senderId === session.data?.user?.id
+    <div className="flex h-full w-full flex-1 flex-col overflow-y-auto overflow-x-hidden">
+      <AnimatePresence>
+        {messages.map((message) => {
+          const isCurrentUser = message.senderId === session.data?.user?.id
 
-              return (
-                <MessageItem
-                  message={message}
-                  isCurrentUser={isCurrentUser}
-                  key={message.id}
-                />
-              )
-            })}
-          </div>
-          <div ref={bottomRef} className="pt-24"></div>
-        </div>
-      </div>
+          return (
+            <motion.div
+              key={message.id}
+              layout
+              initial={{ opacity: 0, scale: 1, y: 50, x: 0 }}
+              animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+              exit={{ opacity: 0, scale: 1, y: 1, x: 0 }}
+              transition={{
+                opacity: { duration: 0.1 },
+                layout: {
+                  type: "spring",
+                  bounce: 0.3,
+                  duration: messages.indexOf(message) * 0.05 + 0.2,
+                },
+              }}
+              style={{
+                originX: 0.5,
+                originY: 0.5,
+              }}
+            >
+              <MessageItem message={message} isCurrentUser={isCurrentUser} />
+            </motion.div>
+          )
+        })}
+      </AnimatePresence>
+
+      <div ref={bottomRef} className="pt-16"></div>
     </div>
   )
 }

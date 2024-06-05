@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const ChatIcon = () => {
   return (
-    <div className="grid grid-cols-5 justify-items-center gap-4 p-3">
+    <div className="grid grid-cols-5 justify-items-center gap-4">
       <div className="p-2">
         <MessageSquare className="text-primary" />
       </div>

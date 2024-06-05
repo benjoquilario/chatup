@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState, useMemo, useEffect } from "react"
+import React, { useState, useMemo, useEffect, Suspense } from "react"
 import { Plus } from "lucide-react"
 import ChatSearch from "./chat-search"
 import ChatItem from "./chat-item"
@@ -12,6 +12,9 @@ import type { FullConversation } from "@/types/types"
 import type { User } from "@prisma/client"
 import { pusherClient } from "@/lib/pusher"
 import find from "lodash.find"
+import Suggestions from "../suggestions"
+import Link from "next/link"
+import { buttonVariants } from "../ui/button"
 
 interface ChatListProps {
   conversations: FullConversation[]
@@ -89,7 +92,7 @@ export default function ChatList({ conversations, users }: ChatListProps) {
       </div>
       <ChatSearch />
       <div className="max-h-[530px] overflow-auto">
-        <div className="flex flex-col p-2">
+        <div className="flex flex-col py-2">
           {items.length > 0 ? (
             items.map((conversation) => (
               <ChatItem
@@ -99,7 +102,18 @@ export default function ChatList({ conversations, users }: ChatListProps) {
               />
             ))
           ) : (
-            <p className="text-muted-foreground/80">Nothing to show here...</p>
+            <>
+              <p className="text-muted-foreground/80">
+                Nothing to show here...
+              </p>
+              <div className="flex items-center">
+                Find user
+                <Link href="/users" className={buttonVariants({ size: "sm" })}>
+                  {" "}
+                  here
+                </Link>
+              </div>
+            </>
           )}
         </div>
       </div>

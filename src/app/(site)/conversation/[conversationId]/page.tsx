@@ -54,16 +54,22 @@ export default async function Conversations({ params }: ConversationsProps) {
 
   return (
     <>
-      <div className="hidden md:block">
-        <div className="w-96 p-3">
+      <div className="fixed z-50 hidden md:block">
+        <div className="w-80">
           <ChatHeader />
           <ChatList conversations={conversations} />
         </div>
       </div>
-      <div className="relative flex w-full flex-col">
-        <ConversationHeader />
-        <ChatBody initialMessages={messages} />
-        <ChatForm />
+      <div className="absolute h-full w-full md:pl-80">
+        <div className="relative flex h-full w-full grow flex-col">
+          <ConversationHeader conversation={conversation} />
+
+          <div className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
+            <ChatBody initialMessages={messages} />
+            <ChatForm />
+          </div>
+        </div>
+        {/* <div className="w-72">Profile</div> */}
       </div>
     </>
   )

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import AuthContext from "@/components/auth-context"
 import ThemeProvider from "@/components/theme-provider"
 import HolyLoader from "holy-loader"
+import { Toaster } from "@/components/ui/toaster"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,13 +30,16 @@ export default function RootLayout({
       >
         <HolyLoader
           color="#ff4500"
-          height="1rem"
+          height="4px"
           speed={250}
           easing="linear"
           showSpinner
         />
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          <AuthContext>{children}</AuthContext>
+          <AuthContext>
+            <div className="h-full">{children}</div>
+          </AuthContext>
+          <Toaster />
         </ThemeProvider>
       </body>
     </html>
