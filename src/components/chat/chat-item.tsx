@@ -43,19 +43,13 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
   )
 
   const lastMessageText = useMemo(() => {
-    if (lastMessage?.image) {
-      return "Sent an image"
-    }
+    if (lastMessage?.image) return "Sent an image"
 
-    if (lastMessage?.isDeleted) {
-      return "Message Deleted"
-    }
+    if (lastMessage?.isDeleted) return "Message Deleted"
 
-    if (lastMessage?.body) {
-      return lastMessage.body
-    }
+    if (lastMessage?.body) return lastMessage.body
 
-    if (lastMessage.isDeleted) return "Started a conversation"
+    return "Started a conversation"
   }, [lastMessage])
 
   return (
