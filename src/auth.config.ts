@@ -4,10 +4,9 @@ export const authConfig = {
   session: {
     strategy: "jwt",
   },
+  secret: process.env.AUTH_SECRET,
   pages: {
-    error: "/",
-    signIn: "/",
-    signOut: "/",
+    signIn: "/login",
   },
   callbacks: {
     authorized({ auth }) {

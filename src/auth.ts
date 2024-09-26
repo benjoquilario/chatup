@@ -4,7 +4,8 @@ import Credentials from "next-auth/providers/credentials"
 import db from "@/lib/db"
 import bcrypt from "bcrypt"
 import { PrismaAdapter } from "@auth/prisma-adapter"
-import { credentialsValidator } from "@/lib/validations/credentials"
+import Google from "next-auth/providers/google"
+import { userAuthSchema } from "./lib/validations/auth"
 
 declare module "next-auth" {
   interface Session {
@@ -20,39 +21,44 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
       name: "credentials",
-      credentials: {
-        email: { label: "email", type: "text" },
-        password: { label: "password", type: "password" },
-      },
       async authorize(credentials) {
-        const cred = await credentialsValidator.parseAsync(credentials)
-        if (!cred.email || !cred.password) {
-          throw new Error("Invalid Credentials")
+        const validatedFields = await userAuthSchema.parseAsync(credentials)
+
+        const { email, password } = validatedFields
+
+        if (!email || !password) {
+          return null
         }
 
-        const user = await db.user.findUnique({
+        const user = await db.user.findFirst({
           where: {
-            email: cred.email,
+            email,
           },
         })
 
-        if (!user || !user.hashedPassword)
-          throw new Error("Invalid Credentials")
+        if (user && user.hashedPassword) {
+          const isPasswordCorrect = await bcrypt.compare(
+            password,
+            user.hashedPassword
+          )
 
-        const isPasswordCorrect = await bcrypt.compare(
-          cred.password,
-          user.hashedPassword
-        )
-
-        if (!isPasswordCorrect) throw new Error("Invalid Credentials")
-
-        return {
-          id: user.id,
-          image: user.image,
-          email: user.email,
-          name: user.name,
+          if (isPasswordCorrect) {
+            return {
+              id: user.id,
+              image: user.image,
+              email: user.email,
+              name: user.name,
+            }
+          }
         }
+
+        return null
       },
+    }),
+    Google({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
 })

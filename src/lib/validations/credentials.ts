@@ -8,3 +8,5 @@ export const credentialsValidator = z.object({
 export const registerValidator = credentialsValidator.extend({
   name: z.string().optional(),
 })
+
+export type Register = z.infer<typeof registerValidator>

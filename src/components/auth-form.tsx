@@ -10,13 +10,22 @@ import { AiOutlineGoogle } from "react-icons/ai"
 import { useRouter } from "next/navigation"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { userAuthSchema } from "@/lib/validations/auth"
+import { AuthUsers, userAuthSchema } from "@/lib/validations/auth"
 import * as z from "zod"
-import axios from "axios"
 import { toast } from "sonner"
 
 import React, { useState } from "react"
-import { signIn } from "next-auth/react"
+import { login, oauthSigninAction, register as signUp } from "@/server/auth"
+
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 
 interface AuthFormProps {
   authType: "login" | "register"
@@ -27,41 +36,36 @@ const AuthForm = ({ authType }: AuthFormProps) => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
+  const form = useForm<FormData>({
     resolver: zodResolver(userAuthSchema),
   })
 
-  async function handleOnSubmit(data: FormData) {
-    setIsLoading(true)
+  const { handleSubmit, control, formState, setError } = form
 
+  async function handleOnSubmit(data: AuthUsers) {
     if (authType === "register") {
-      const response = await axios.post("/api/register", {
-        ...data,
-      })
+      const res = await signUp(data)
 
-      if (response.status === 200) {
+      if (res.success) {
         toast.success("Account created! Redirecting to login...")
         setTimeout(() => router.push("/login"), 1000)
       } else {
         toast.error("Something went wrong!")
       }
-
-      setIsLoading(false)
     } else {
-      const response = await signIn("credentials", { ...data, redirect: false })
+      const res = await login(data)
 
-      if (response?.ok) {
-        router.refresh()
+      if (res.success) window.location.href = "/conversation"
+    }
+  }
 
-        router.push("/conversation")
-      } else {
-        setIsLoading(false)
-        toast.error("Invalid credentials")
-      }
+  const clickHandler = async (provider: "google" | "github") => {
+    try {
+      const res = await oauthSigninAction(provider)
+
+      if (res.success) window.location.href = "/conversation"
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -69,11 +73,19 @@ const AuthForm = ({ authType }: AuthFormProps) => {
     <React.Fragment>
       <CardContent className="grid gap-4">
         <div className="grid w-full grid-cols-2 gap-3">
-          <Button variant="outline" disabled={isLoading}>
+          <Button
+            onClick={clickHandler.bind(null, "google")}
+            variant="outline"
+            disabled={isLoading}
+          >
             <AiOutlineGoogle aria-hidden="true" className="mr-2 size-4" />
             Google
           </Button>
-          <Button variant="outline" disabled={isLoading}>
+          <Button
+            onClick={clickHandler.bind(null, "google")}
+            variant="outline"
+            disabled={isLoading}
+          >
             <FiGithub aria-hidden="true" className="mr-2 size-4" />
             Github
           </Button>
@@ -89,48 +101,81 @@ const AuthForm = ({ authType }: AuthFormProps) => {
           </div>
         </div>
 
-        <form className="grid gap-4" onSubmit={handleSubmit(handleOnSubmit)}>
-          {authType === "register" && (
-            <div className="grid gap-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                {...register("name")}
-                type="text"
-                id="name"
-                autoCapitalize="none"
-                autoCorrect="off"
-                disabled={isLoading}
+        <Form {...form}>
+          <form className="grid gap-4" onSubmit={handleSubmit(handleOnSubmit)}>
+            {authType === "register" && (
+              <FormField
+                control={control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <div className="grid gap-2">
+                        <Input
+                          {...field}
+                          type="text"
+                          id="name"
+                          disabled={formState.isSubmitting}
+                        />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-          )}
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              {...register("email", { required: true })}
-              id="email"
-              placeholder="m@example.com"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              type="email"
-              disabled={isLoading}
+            )}
+            <FormField
+              control={control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <div className="grid gap-2">
+                      <Input
+                        {...field}
+                        id="email"
+                        type="email"
+                        disabled={formState.isSubmitting}
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              {...register("password", { required: true })}
-              type="password"
-              id="password"
-              autoCapitalize="none"
-              autoCorrect="off"
-              disabled={isLoading}
+
+            <FormField
+              control={control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <div className="grid gap-2">
+                      <Input
+                        disabled={formState.isSubmitting}
+                        {...field}
+                        type="password"
+                        id="password"
+                      />
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-          <Button className="w-full" disabled={isLoading} type="submit">
-            {authType === "login" ? "Sign In" : "Create an account"}
-          </Button>
-        </form>
+
+            <Button
+              disabled={formState.isSubmitting}
+              className="w-full"
+              type="submit"
+            >
+              {authType === "login" ? "Sign In" : "Create an account"}
+            </Button>
+          </form>
+        </Form>
       </CardContent>
       <CardFooter className="grid gap-1.5">
         <div className="mt-2 text-left text-sm">
