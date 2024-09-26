@@ -31,6 +31,7 @@ import useConversation from "@/lib/hooks/useConversation"
 import useStoreMessage from "@/store"
 import { deleteMessage } from "@/app/actions"
 import { toast } from "../ui/use-toast"
+import ClientOnly from "../client-only"
 
 type MessageItemProps = {
   isCurrentUser: boolean
@@ -46,8 +47,6 @@ const MessageItem = ({ isCurrentUser, message }: MessageItemProps) => {
     store.setIsEditing,
   ])
 
-  console.log(message.sender)
-
   const handleEditMessage = () => {
     setSelectedMessage({
       id: message.id,
@@ -58,6 +57,8 @@ const MessageItem = ({ isCurrentUser, message }: MessageItemProps) => {
     setIsEditing(true)
   }
 
+  console.log(message)
+
   return (
     <div
       className={cn("group flex w-full items-end gap-2 p-3", {
@@ -66,7 +67,12 @@ const MessageItem = ({ isCurrentUser, message }: MessageItemProps) => {
     >
       <div className={cn(isCurrentUser && "order-2")}>
         <Avatar className="size-6">
-          <AvatarImage src="/images/placeholder.jpg" />
+          <AvatarImage
+            src={
+              message.sender.image ??
+              "https://raw.githubusercontent.com/benjoquilario/animehi-stream/refs/heads/master/public/placeholder.png"
+            }
+          />
           <AvatarFallback>
             <div className="size-full animate-pulse"></div>
           </AvatarFallback>
@@ -86,14 +92,16 @@ const MessageItem = ({ isCurrentUser, message }: MessageItemProps) => {
             >
               {message.body}
             </p>
-            <div
-              className={cn("mt-2 text-[10px] md:text-[11px]", {
-                "italic text-primary-foreground/80": isCurrentUser,
-              })}
-            >
-              {format(new Date(message.createdAt), "MM/dd/yyyy")} -{" "}
-              {format(new Date(message.createdAt), "p")}
-            </div>
+            <ClientOnly>
+              <div
+                className={cn("mt-2 text-[10px] md:text-[11px]", {
+                  "italic text-primary-foreground/80": isCurrentUser,
+                })}
+              >
+                {format(new Date(message.createdAt), "MM/dd/yyyy")} -{" "}
+                {format(new Date(message.createdAt), "p")}
+              </div>
+            </ClientOnly>
           </div>
           {session?.user?.id === message?.sender?.id ? (
             <DropdownMenu>

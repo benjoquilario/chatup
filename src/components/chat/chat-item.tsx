@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react"
 import type { FullConversation } from "@/types/types"
 import { Skeleton } from "@/components/ui/skeleton"
 import { format } from "date-fns"
+import ClientOnly from "../client-only"
 
 interface ChatItemProps {
   conversation: FullConversation
@@ -18,17 +19,14 @@ interface ChatItemProps {
 export default function ChatItem({ conversation, selected }: ChatItemProps) {
   const session = useSession()
 
-  const userEmail = useMemo(
-    () => session.data?.user?.email,
-    [session.data?.user?.email]
-  )
+  const email = session.data?.user.email
+  const id = session.data?.user.id
+
+  const userEmail = useMemo(() => email, [email])
 
   const conversationPartner = useMemo(
-    () =>
-      conversation.users.find(
-        (user) => user.email !== session.data?.user?.email
-      ),
-    [conversation, session.data?.user?.email]
+    () => conversation.users.find((user) => user.email !== email),
+    [conversation, email]
   )
 
   const lastMessage = useMemo(() => {
@@ -38,7 +36,7 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
   }, [conversation.messages])
 
   const lastConversationPartner = useMemo(
-    () => lastMessage?.senderId === session.data?.user.id,
+    () => lastMessage?.senderId === id,
     [lastMessage, session]
   )
 
@@ -64,7 +62,13 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
       href={`/conversation/${conversation.id}`}
     >
       <Avatar>
-        <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+        <AvatarImage
+          src={
+            conversationPartner?.image ??
+            "https://raw.githubusercontent.com/benjoquilario/animehi-stream/refs/heads/master/public/placeholder.png"
+          }
+          alt="@shadcn"
+        />
         <AvatarFallback>
           <Skeleton className="h-12 w-12 rounded-full" />
         </AvatarFallback>
@@ -80,9 +84,11 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
               {conversationPartner?.name || conversation.name}
             </h3>
             <div className="flex flex-col items-center">
-              <span className="mb-1 text-xs font-light text-muted-foreground/90">
-                {format(new Date(conversation.createdAt), "p")}
-              </span>
+              <ClientOnly>
+                <span className="mb-1 text-xs font-light text-muted-foreground/90">
+                  {format(new Date(conversation.createdAt), "p")}
+                </span>
+              </ClientOnly>
               {/* <span className="flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-xs font-semibold text-white">
             6
           </span> */}

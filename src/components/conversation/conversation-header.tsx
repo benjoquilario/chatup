@@ -21,6 +21,7 @@ export default function ConversationHeader({
   conversation,
 }: ConversationHeaderProps) {
   const session = useSession()
+
   const partner = useMemo(
     () => conversation.users.find((user) => user.id !== session.data?.user.id),
     [conversation, session]
@@ -40,7 +41,13 @@ export default function ConversationHeader({
           <IoMdArrowRoundBack className="h-5 w-5" />
         </Link>
         <Avatar className="size-10">
-          <AvatarImage src="https://github.com/shadcn.png" alt="" />
+          <AvatarImage
+            src={
+              partner?.image ??
+              "https://raw.githubusercontent.com/benjoquilario/animehi-stream/refs/heads/master/public/placeholder.png"
+            }
+            alt=""
+          />
           <AvatarFallback>
             <div className="size-full animate-pulse"></div>
           </AvatarFallback>

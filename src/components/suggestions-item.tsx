@@ -19,8 +19,8 @@ const SuggestionsItem = ({ user }: SuggestionsItemProps) => {
   const router = useRouter()
 
   return (
-    <div
-      // disabled={isPending}
+    <button
+      disabled={isPending}
       onClick={() => {
         startTransition(async () => {
           const response = (await createConversation({
@@ -41,7 +41,13 @@ const SuggestionsItem = ({ user }: SuggestionsItemProps) => {
     >
       <div className="flex items-center gap-1">
         <Avatar className="size-10">
-          <AvatarImage src={"https://github.com/shadcn.png"} alt="" />
+          <AvatarImage
+            src={
+              user.image ??
+              "https://raw.githubusercontent.com/benjoquilario/animehi-stream/refs/heads/master/public/placeholder.png"
+            }
+            alt=""
+          />
           <AvatarFallback>
             <div className="size-full animate-pulse"></div>
           </AvatarFallback>
@@ -51,7 +57,7 @@ const SuggestionsItem = ({ user }: SuggestionsItemProps) => {
           <p className="text-xs text-muted-foreground/70">2 mutual</p>
         </div>
       </div>
-    </div>
+    </button>
   )
 }
 

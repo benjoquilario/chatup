@@ -50,16 +50,15 @@ export default async function Conversations({ params }: ConversationsProps) {
   if (!conversation)
     return <div className="h-full lg:pl-80">No Conversation Found</div>
 
-  console.log(messages)
-
   return (
     <>
-      <div className="fixed z-50 hidden md:block">
-        <div className="w-80">
-          <ChatHeader />
-          <ChatList conversations={conversations} />
-        </div>
+      <div className="fixed top-0 z-50 hidden pl-4 md:block md:w-80">
+        <ChatHeader />
       </div>
+      <div className="fixed bottom-0 top-[206px] z-50 hidden w-full overflow-y-auto p-0 md:block md:w-80 md:p-3">
+        <ChatList conversations={conversations} />
+      </div>
+
       <div className="absolute h-full w-full md:pl-80">
         <div className="relative flex h-full w-full grow flex-col">
           <ConversationHeader conversation={conversation} />

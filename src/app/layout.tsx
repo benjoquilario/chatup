@@ -25,9 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={cn("min-h-screen font-sans antialiased", fontSans.variable)}
-      >
+      <body className={cn("h-full font-sans antialiased", fontSans.variable)}>
         <HolyLoader
           color="#ff4500"
           height="4px"

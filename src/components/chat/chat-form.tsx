@@ -19,6 +19,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { useSession } from "next-auth/react"
 
 const messageSchema = z.object({
   message: z
@@ -32,6 +33,7 @@ export default function ChatForm() {
   const buttonRef = useRef<HTMLDivElement | null>(null)
   const { conversationId } = useConversation()
   const [isLoading, setIsLoading] = useState(false)
+  const { data: session } = useSession()
 
   const form = useForm<z.infer<typeof messageSchema>>({
     resolver: zodResolver(messageSchema),
@@ -81,7 +83,12 @@ export default function ChatForm() {
     <div className="z-100 w-full p-3 shadow-muted lg:p-4">
       <div className="flex items-center gap-2 lg:gap-4">
         <Avatar className="size-10">
-          <AvatarImage src="/images/placeholder.jpg" />
+          <AvatarImage
+            src={
+              session?.user.image ??
+              "https://raw.githubusercontent.com/benjoquilario/animehi-stream/refs/heads/master/public/placeholder.png"
+            }
+          />
           <AvatarFallback>CN</AvatarFallback>
         </Avatar>
         <Form {...form}>
