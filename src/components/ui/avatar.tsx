@@ -40,7 +40,7 @@ const AvatarFallback = React.forwardRef<
     ref={ref}
     // eslint-disable-next-line tailwindcss/classnames-order
     className={cn(
-      "bg-muted flex size-full items-center justify-center rounded-full",
+      "flex size-full items-center justify-center rounded-full bg-muted",
       className
     )}
     {...props}
