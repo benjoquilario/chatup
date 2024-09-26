@@ -58,7 +58,7 @@ const ChatBody = ({ initialMessages = [] }: ChatBodyProps) => {
   }, [conversationId])
 
   return (
-    <div className="flex h-full w-full flex-1 flex-col overflow-y-auto overflow-x-hidden">
+    <div className="flex size-full flex-1 flex-col overflow-y-auto overflow-x-hidden">
       <AnimatePresence>
         {messages.map((message) => {
           const isCurrentUser = message.senderId === session.data?.user?.id

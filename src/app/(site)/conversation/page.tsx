@@ -23,8 +23,8 @@ export default async function ConversationPage() {
         <ChatList conversations={conversations} />
       </div>
 
-      <div className="h-full w-full md:pl-80">
-        <div className="relative flex h-full w-full flex-1 items-center">
+      <div className="size-full md:pl-80">
+        <div className="relative flex size-full flex-1 items-center">
           <div className="relative hidden w-full flex-1 flex-col text-center text-2xl font-extrabold md:flex">
             Find User to chat
           </div>

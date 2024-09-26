@@ -113,7 +113,7 @@ const MessageItem = ({ isCurrentUser, message }: MessageItemProps) => {
                     isCurrentUser && "-order-1"
                   )}
                 >
-                  <BsThreeDotsVertical className="h-5 w-5" />
+                  <BsThreeDotsVertical className="size-5" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent>

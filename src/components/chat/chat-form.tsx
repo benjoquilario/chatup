@@ -48,11 +48,11 @@ export default function ChatForm() {
     if (form.formState.isSubmitSuccessful) {
       form.reset()
     }
-  }, [form.formState.isSubmitSuccessful, form.reset])
+  }, [form.formState.isSubmitSuccessful, form])
 
   useEffect(() => {
     form.setFocus("message")
-  }, [form.setFocus])
+  }, [form])
 
   async function handleOnSubmit(data: Inputs) {
     setIsLoading(true)

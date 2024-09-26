@@ -38,7 +38,7 @@ export default function ConversationHeader({
             className: "text-primary",
           })}
         >
-          <IoMdArrowRoundBack className="h-5 w-5" />
+          <IoMdArrowRoundBack className="size-5" />
         </Link>
         <Avatar className="size-10">
           <AvatarImage

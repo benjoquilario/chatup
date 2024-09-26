@@ -13,13 +13,13 @@ const SiteHeader = () => {
     <header className="">
       <div className="mx-auto flex h-[52px] w-full max-w-screen-2xl items-center justify-between gap-4 px-[4%] md:h-[64px] 2xl:h-[75px]">
         <Link href="/" className="flex items-center p-2">
-          <TbHexagonLetterC className="h-8 w-8" />
+          <TbHexagonLetterC className="size-8" />
           <span className="text-lg font-semibold">hatty</span>
         </Link>
         <div className="flex items-center gap-3">
           <ThemeToggle />
           <Button size="icon" variant="ghost" onClick={() => signOut()}>
-            <HiLogout className="h-6 w-6" />
+            <HiLogout className="size-6" />
           </Button>
         </div>
       </div>

@@ -37,7 +37,7 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
 
   const lastConversationPartner = useMemo(
     () => lastMessage?.senderId === id,
-    [lastMessage, session]
+    [lastMessage, id]
   )
 
   const lastMessageText = useMemo(() => {
@@ -70,11 +70,11 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
           alt="@shadcn"
         />
         <AvatarFallback>
-          <Skeleton className="h-12 w-12 rounded-full" />
+          <Skeleton className="size-12 rounded-full" />
         </AvatarFallback>
       </Avatar>
       <div className="ml-2 flex w-full items-center justify-between">
-        <div className="flex h-full w-full flex-col items-start justify-between text-sm">
+        <div className="flex size-full flex-col items-start justify-between text-sm">
           <div className="flex w-full items-center justify-between">
             <h3
               className={cn(

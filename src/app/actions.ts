@@ -34,6 +34,15 @@ export async function sendMessage({
           },
         },
       },
+      include: {
+        sender: {
+          select: {
+            email: true,
+            image: true,
+            name: true,
+          },
+        },
+      },
     })
 
     const updatedConversation = await db.conversation.update({
@@ -50,9 +59,11 @@ export async function sendMessage({
       },
       include: {
         users: true,
+
         messages: {
           include: {
             seen: true,
+            sender: true,
           },
         },
       },

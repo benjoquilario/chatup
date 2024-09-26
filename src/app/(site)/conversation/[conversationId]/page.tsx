@@ -59,11 +59,11 @@ export default async function Conversations({ params }: ConversationsProps) {
         <ChatList conversations={conversations} />
       </div>
 
-      <div className="absolute h-full w-full md:pl-80">
-        <div className="relative flex h-full w-full grow flex-col">
+      <div className="absolute size-full md:pl-80">
+        <div className="relative flex size-full grow flex-col">
           <ConversationHeader conversation={conversation} />
 
-          <div className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden">
+          <div className="flex size-full flex-col overflow-y-auto overflow-x-hidden">
             <ChatBody initialMessages={messages} />
             <ChatForm />
           </div>

@@ -21,14 +21,14 @@ const ChatHeader = () => {
       <div className="w-full">
         <div className="mx-auto mb-2 flex h-[52px] w-full items-center justify-between gap-4 md:h-[64px] 2xl:h-[75px]">
           <Link href="/" className="flex items-center">
-            <TbHexagonLetterC className="h-8 w-8" />
+            <TbHexagonLetterC className="size-8" />
             <span className="text-lg font-semibold">hatty</span>
           </Link>
           <div className="flex items-center gap-3">
             <ThemeToggle />
             <form action={logout}>
               <Button type="submit" size="icon" variant="ghost">
-                <HiLogout className="h-6 w-6" />
+                <HiLogout className="size-6" />
               </Button>
             </form>
           </div>
@@ -41,7 +41,7 @@ const ChatHeader = () => {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="h-10 w-10 rounded-full">
+              <Button className="size-10 rounded-full">
                 <span className="rounded-full bg-primary p-2">
                   <Plus className="text-white" />
                 </span>
