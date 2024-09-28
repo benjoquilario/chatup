@@ -1,4 +1,5 @@
 "use client"
+
 import { type RegisterUser, registerAuthSchema } from "@/lib/validations/auth"
 import { Button } from "@/components/ui/button"
 import {
@@ -12,7 +13,6 @@ import {
 import { Input } from "@/components/ui/input"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { register } from "@/server/auth"
-import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 

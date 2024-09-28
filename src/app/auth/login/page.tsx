@@ -9,6 +9,7 @@ import {
 import SignInForm from "./_components/sigin-in-form"
 import Link from "next/link"
 import Oauth from "../oauth"
+import { Suspense } from "react"
 
 const Login = () => {
   return (
@@ -21,7 +22,9 @@ const Login = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-2.5">
-          <Oauth />
+          <Suspense>
+            <Oauth />
+          </Suspense>
           <div className="grid w-full grid-cols-2 gap-3"></div>
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
