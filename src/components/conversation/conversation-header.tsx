@@ -6,7 +6,6 @@ import { BsPersonFill } from "react-icons/bs"
 import { BiDotsVerticalRounded } from "react-icons/bi"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import type { Conversation, User } from "@prisma/client"
-import { useSession } from "next-auth/react"
 // import useConversationStore from "@/store/conversation"
 import { IoMdArrowRoundBack } from "react-icons/io"
 import Link from "next/link"
@@ -15,16 +14,16 @@ type ConversationHeaderProps = {
   conversation: Conversation & {
     users: User[]
   }
+  currentUserId: string
 }
 
 export default function ConversationHeader({
   conversation,
+  currentUserId,
 }: ConversationHeaderProps) {
-  const session = useSession()
-
   const partner = useMemo(
-    () => conversation.users.find((user) => user.id !== session.data?.user.id),
-    [conversation, session]
+    () => conversation.users.find((user) => user.id !== currentUserId),
+    [conversation, currentUserId]
   )
 
   return (
