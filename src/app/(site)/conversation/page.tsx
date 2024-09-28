@@ -19,8 +19,6 @@ export default async function ConversationPage() {
 
   if (!session) redirect("/auth/login")
 
-  if (conversations.length > 0) redirect(`/conversation/${conversations[0].id}`)
-
   return (
     <>
       <div className="fixed top-0 z-50 w-full px-3 md:w-80">
