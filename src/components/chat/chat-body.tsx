@@ -34,7 +34,6 @@ const ChatBody = ({ initialMessages = [], currentUserId }: ChatBodyProps) => {
 
       setMessages((prevMessage) => [...apiMessage.messages, ...prevMessage])
       setOffset((prevOffset) => prevOffset + MESSAGES_PER_PAGE)
-      bottomRef?.current?.scrollIntoView()
     }
   }
 
@@ -86,7 +85,7 @@ const ChatBody = ({ initialMessages = [], currentUserId }: ChatBodyProps) => {
 
   return (
     <div className="flex size-full flex-1 flex-col overflow-y-auto overflow-x-hidden">
-      {hasNextPage && <div ref={scrollTrigger}>Loading...</div>}
+      {hasNextPage && <div ref={scrollTrigger} />}
       <AnimatePresence>
         {messages.map((message) => {
           const isCurrentUser = message.senderId === currentUserId

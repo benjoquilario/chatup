@@ -16,7 +16,10 @@ interface ChatItemProps {
   selected: boolean
 }
 
-export default function ChatItem({ conversation, selected }: ChatItemProps) {
+export default function ChatItem({
+  conversation,
+  selected = true,
+}: ChatItemProps) {
   const session = useSession()
 
   const email = session.data?.user.email
