@@ -10,7 +10,12 @@ import { AiOutlineGoogle } from "react-icons/ai"
 import { useRouter } from "next/navigation"
 import { useForm, type SubmitHandler } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { AuthUsers, userAuthSchema } from "@/lib/validations/auth"
+import {
+  type AuthUsers,
+  registerAuthSchema,
+  type RegisterUser,
+  userAuthSchema,
+} from "@/lib/validations/auth"
 import * as z from "zod"
 import { toast } from "sonner"
 
@@ -36,13 +41,13 @@ const AuthForm = ({ authType }: AuthFormProps) => {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
 
-  const form = useForm<FormData>({
-    resolver: zodResolver(userAuthSchema),
+  const form = useForm<RegisterUser>({
+    resolver: zodResolver(registerAuthSchema),
   })
 
   const { handleSubmit, control, formState, setError } = form
 
-  async function handleOnSubmit(data: AuthUsers) {
+  async function handleOnSubmit(data: RegisterUser) {
     if (authType === "register") {
       const res = await signUp(data)
 
@@ -71,7 +76,7 @@ const AuthForm = ({ authType }: AuthFormProps) => {
 
   return (
     <React.Fragment>
-      <CardContent className="grid gap-4">
+      <CardContent className="grid gap-2.5">
         <div className="grid w-full grid-cols-2 gap-3">
           <Button
             onClick={clickHandler.bind(null, "google")}
@@ -102,28 +107,53 @@ const AuthForm = ({ authType }: AuthFormProps) => {
         </div>
 
         <Form {...form}>
-          <form className="grid gap-4" onSubmit={handleSubmit(handleOnSubmit)}>
+          <form
+            className="grid gap-2.5"
+            onSubmit={handleSubmit(handleOnSubmit)}
+          >
             {authType === "register" && (
-              <FormField
-                control={control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <div className="grid gap-2">
-                        <Input
-                          {...field}
-                          type="text"
-                          id="name"
-                          disabled={formState.isSubmitting}
-                        />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-2 gap-2.5">
+                <FormField
+                  control={control}
+                  name="firstName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>First Name</FormLabel>
+                      <FormControl>
+                        <div className="grid gap-2">
+                          <Input
+                            {...field}
+                            type="text"
+                            id="firstname"
+                            disabled={formState.isSubmitting}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name="lastName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Last Name</FormLabel>
+                      <FormControl>
+                        <div className="grid gap-2">
+                          <Input
+                            {...field}
+                            type="text"
+                            id="lastname"
+                            disabled={formState.isSubmitting}
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             )}
             <FormField
               control={control}
