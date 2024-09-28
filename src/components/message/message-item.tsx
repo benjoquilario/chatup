@@ -29,7 +29,7 @@ import {
 import { Button } from "@/components/ui/button"
 import useConversation from "@/lib/hooks/useConversation"
 import useStoreMessage from "@/store"
-import { deleteMessage } from "@/app/actions"
+import { deleteMessage } from "@/server/message"
 import { toast } from "../ui/use-toast"
 import ClientOnly from "../client-only"
 
@@ -38,26 +38,35 @@ type MessageItemProps = {
   message: FullMessage
 }
 
-const MessageItem = ({ isCurrentUser, message }: MessageItemProps) => {
+const MessageItem = ({ isCurrentUser = true, message }: MessageItemProps) => {
   const { conversationId } = useConversation()
-  const { data: session } = useSession()
-  const [isDeleting, startTransition] = useTransition()
-  const [setSelectedMessage, setIsEditing] = useStoreMessage((store) => [
-    store.setSelectedMessage,
-    store.setIsEditing,
-  ])
+  const setSelectedMessage = useStoreMessage(
+    (store) => store.setSelectedMessage
+  )
 
-  const handleEditMessage = () => {
+  const setIsEditing = useStoreMessage((store) => store.setIsEditing)
+
+  const handleEditMessage = function () {
     setSelectedMessage({
       id: message.id,
-
-      body: message.body as string,
+      body: message.body!,
     })
 
     setIsEditing(true)
   }
 
-  console.log(message)
+  const handleDelete = async function (messageId: string) {
+    const res = await deleteMessage({
+      messageId,
+      conversationId: conversationId as string,
+    })
+
+    if (!res.ok) return toast({ title: res.message })
+
+    return toast({
+      title: res.message,
+    })
+  }
 
   return (
     <div
@@ -103,7 +112,7 @@ const MessageItem = ({ isCurrentUser, message }: MessageItemProps) => {
               </div>
             </ClientOnly>
           </div>
-          {session?.user?.id === message?.sender?.id ? (
+          {isCurrentUser ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -140,19 +149,7 @@ const MessageItem = ({ isCurrentUser, message }: MessageItemProps) => {
                         <AlertDialogAction asChild>
                           <Button
                             size="sm"
-                            onClick={async () => {
-                              const response = await deleteMessage({
-                                messageId: message.id,
-                                conversationId: conversationId as string,
-                              })
-
-                              if (!response.ok)
-                                return toast({ title: response.message })
-
-                              return toast({
-                                title: response.message,
-                              })
-                            }}
+                            onClick={() => handleDelete(message.id)}
                             variant="ghost"
                             className="ml-2"
                           >

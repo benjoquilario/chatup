@@ -6,7 +6,7 @@ export const authConfig = {
   },
   secret: process.env.AUTH_SECRET,
   pages: {
-    signIn: "/login",
+    signIn: "/auth/login",
   },
   callbacks: {
     authorized({ auth }) {
