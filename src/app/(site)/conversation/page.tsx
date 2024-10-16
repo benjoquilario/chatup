@@ -2,24 +2,29 @@ import React, { Suspense } from "react"
 
 import ChatHeader from "@/components/chat/chat-header"
 import ChatList from "@/components/chat/chat-list"
-import { notFound } from "next/navigation"
+import { redirect } from "next/navigation"
 import { getConversations } from "@/lib/metrics"
-import { getCurrentUser } from "@/lib/current-user"
 import { auth } from "@/auth"
 import Suggestions from "@/components/suggestions"
+
+import type { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "Conversation",
+}
 
 export default async function ConversationPage() {
   const session = await auth()
   const conversations = await getConversations()
 
-  if (!session) notFound()
+  if (!session) redirect("/auth/login")
 
   return (
     <>
       <div className="fixed top-0 z-50 w-full px-3 md:w-80">
         <ChatHeader />
       </div>
-      <div className="fixed bottom-0 top-[206px] z-50 w-full overflow-y-auto p-0 md:w-80 md:p-3">
+      <div className="hide-scrollbar fixed bottom-0 top-[206px] z-50 w-full overflow-y-auto p-0 md:w-80 md:p-3">
         <ChatList conversations={conversations} />
       </div>
 

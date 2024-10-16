@@ -31,8 +31,10 @@ export async function getChatMessages(conversationId: Conversation["id"]) {
       seen: true,
     },
     orderBy: {
-      createdAt: "asc",
+      createdAt: "desc",
     },
+    take: 5,
+    skip: 0,
   })
 
   return messages
@@ -41,7 +43,7 @@ export async function getChatMessages(conversationId: Conversation["id"]) {
 export async function getConversations() {
   const currentUser = await getCurrentUser()
 
-  if (!currentUser?.id) return []
+  if (!currentUser) return []
 
   const conversations = await db.conversation.findMany({
     orderBy: {
@@ -62,6 +64,8 @@ export async function getConversations() {
       },
     },
   })
+
+  if (!conversations) return []
 
   return conversations
 }

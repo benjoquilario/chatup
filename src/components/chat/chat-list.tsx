@@ -26,8 +26,6 @@ export default function ChatList({ conversations, users }: ChatListProps) {
   const router = useRouter()
   const session = useSession()
 
-  console.log(items)
-
   const { conversationId, isOpen } = useConversation()
 
   const pusherKey = useMemo(

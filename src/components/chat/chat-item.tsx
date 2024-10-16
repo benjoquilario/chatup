@@ -16,7 +16,10 @@ interface ChatItemProps {
   selected: boolean
 }
 
-export default function ChatItem({ conversation, selected }: ChatItemProps) {
+export default function ChatItem({
+  conversation,
+  selected = true,
+}: ChatItemProps) {
   const session = useSession()
 
   const email = session.data?.user.email
@@ -56,7 +59,7 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
         buttonVariants({ variant: "ghost", size: "lg" }),
         "mb-2 h-[4.25rem] w-full overflow-hidden rounded-sm px-4 py-2 shadow-md",
         {
-          "bg-primary text-primary-foreground hover:bg-primary/90": selected,
+          "bg-primary hover:bg-primary/90": selected,
         }
       )}
       href={`/conversation/${conversation.id}`}
@@ -78,7 +81,10 @@ export default function ChatItem({ conversation, selected }: ChatItemProps) {
           <div className="flex w-full items-center justify-between">
             <h3
               className={cn(
-                "font-heading text-[15px] font-medium capitalize tracking-tight"
+                "font-heading text-[15px] font-medium capitalize tracking-tight",
+                {
+                  "text-primary-foreground": selected,
+                }
               )}
             >
               {conversationPartner?.name || conversation.name}

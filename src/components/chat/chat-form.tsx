@@ -59,19 +59,11 @@ export default function ChatForm() {
 
     try {
       form.setValue("message", "", { shouldValidate: true })
-      // const res = await axios.post("/api/messages", {
-      //   ...data,
-      //   conversationId: conversationId,
-      // })
 
-      const response = await sendMessage({
+      await sendMessage({
         message: data.message,
         conversationId: conversationId as string,
       })
-
-      if (response) {
-        setIsLoading(false)
-      }
     } catch (error) {
       console.log(error)
     } finally {

@@ -43,7 +43,7 @@ const ChatHeader = () => {
             <DropdownMenuTrigger asChild>
               <Button className="size-10 rounded-full">
                 <span className="rounded-full bg-primary p-2">
-                  <Plus className="text-white" />
+                  <Plus className="text-primary-foreground" />
                 </span>
               </Button>
             </DropdownMenuTrigger>

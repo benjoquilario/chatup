@@ -1,6 +1,10 @@
 "use server"
 
-import { AuthUsers } from "@/lib/validations/auth"
+import {
+  AuthUsers,
+  registerAuthSchema,
+  RegisterUser,
+} from "@/lib/validations/auth"
 import { credentialsValidator, Register } from "@/lib/validations/credentials"
 import { AuthError } from "next-auth"
 import { signIn, signOut } from "@/auth"
@@ -8,6 +12,7 @@ import bcrypt from "bcrypt"
 import db from "@/lib/db"
 import { registerValidator } from "@/lib/validations/credentials"
 import { isRedirectError } from "next/dist/client/components/redirect"
+import { getConversations } from "@/lib/metrics"
 
 export async function login(values: AuthUsers) {
   try {
@@ -66,14 +71,14 @@ export async function login(values: AuthUsers) {
   }
 }
 
-export async function register(values: AuthUsers) {
-  const parsedValues = registerValidator.safeParse(values)
+export async function register(values: RegisterUser) {
+  const parsedValues = registerAuthSchema.safeParse(values)
 
   if (!parsedValues.success) {
-    return { success: false, error: "Invalid Fields", statusCode: 400 }
+    return { success: false, error: parsedValues.error, statusCode: 400 }
   }
 
-  const { name, email, password } = parsedValues.data
+  const { firstName, lastName, email, password } = parsedValues.data
 
   try {
     const isEmailExist = await db.user.findFirst({
@@ -84,7 +89,9 @@ export async function register(values: AuthUsers) {
 
     if (isEmailExist)
       return {
-        message: "Email Exist",
+        success: false,
+        error: "Email already exists",
+        statusCode: 409,
       }
 
     const hashedPassword = await bcrypt.hash(password, 12)
@@ -92,13 +99,14 @@ export async function register(values: AuthUsers) {
     await db.user.create({
       data: {
         email,
-        name,
+        name: `${firstName} ${lastName}`,
         hashedPassword,
       },
     })
 
     return {
       success: true,
+      status: 200,
     }
   } catch (err) {
     console.error(err)

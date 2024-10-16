@@ -9,22 +9,46 @@ import { pusherClient } from "@/lib/pusher"
 import find from "lodash.find"
 import type { FullMessage } from "@/types/types"
 import { AnimatePresence, motion } from "framer-motion"
-
+import { getChatMessages, MESSAGES_PER_PAGE } from "@/lib/client"
+import { useInView } from "react-intersection-observer"
 interface ChatBodyProps {
+  currentUserId: string
   initialMessages?: FullMessage[]
 }
 
-const ChatBody = ({ initialMessages = [] }: ChatBodyProps) => {
+const ChatBody = ({ initialMessages = [], currentUserId }: ChatBodyProps) => {
   const [messages, setMessages] = useState(initialMessages)
-  const bottomRef = useRef<HTMLDivElement>(null)
-  const session = useSession()
   const { conversationId } = useConversation()
+  const [offset, setOffset] = useState(MESSAGES_PER_PAGE)
+  const [hasNextPage, setHasNextPage] = useState(true)
+  const bottomRef = useRef<HTMLDivElement>(null)
+  const [scrollTrigger, isInView] = useInView()
+
+  const loadMoreMessage = async function () {
+    if (hasNextPage) {
+      const apiMessage = await getChatMessages(conversationId as string, offset)
+
+      if (apiMessage.hasNextPage) {
+        setHasNextPage(true)
+      }
+
+      setMessages((prevMessage) => [...apiMessage.messages, ...prevMessage])
+      setOffset((prevOffset) => prevOffset + MESSAGES_PER_PAGE)
+    }
+  }
+
+  useEffect(() => {
+    if (isInView && hasNextPage) {
+      loadMoreMessage()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isInView, hasNextPage])
 
   useEffect(() => {
     pusherClient.subscribe(conversationId as string)
     bottomRef?.current?.scrollIntoView()
 
-    function messageHandler(message: FullMessage) {
+    const messageHandler = function (message: FullMessage) {
       setMessages((current) => {
         if (find(current, { id: message.id })) {
           return current
@@ -36,7 +60,7 @@ const ChatBody = ({ initialMessages = [] }: ChatBodyProps) => {
       bottomRef?.current?.scrollIntoView()
     }
 
-    function updateMessageHandler(newMessage: FullMessage) {
+    const updateMessageHandler = function (newMessage: FullMessage) {
       setMessages((current) =>
         current.map((currentMessage) => {
           if (currentMessage.id === newMessage.id) {
@@ -57,11 +81,14 @@ const ChatBody = ({ initialMessages = [] }: ChatBodyProps) => {
     }
   }, [conversationId])
 
+  console.log(messages)
+
   return (
     <div className="flex size-full flex-1 flex-col overflow-y-auto overflow-x-hidden">
+      {hasNextPage && <div ref={scrollTrigger} />}
       <AnimatePresence>
         {messages.map((message) => {
-          const isCurrentUser = message.senderId === session.data?.user?.id
+          const isCurrentUser = message.senderId === currentUserId
 
           return (
             <motion.div
