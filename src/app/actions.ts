@@ -25,17 +25,12 @@ export async function sendMessage({
             id: conversationId,
           },
         },
-        sender: {
+        user: {
           connect: { id: currentUser.id },
-        },
-        seen: {
-          connect: {
-            id: currentUser.id,
-          },
         },
       },
       include: {
-        sender: {
+        user: {
           select: {
             email: true,
             image: true,
@@ -59,11 +54,9 @@ export async function sendMessage({
       },
       include: {
         users: true,
-
         messages: {
           include: {
-            seen: true,
-            sender: true,
+            user: true,
           },
         },
       },
@@ -100,17 +93,28 @@ export async function createConversation(convo: ICreateConversations) {
   try {
     const currentUser = await getCurrentUser()
 
+    console.log(currentUser)
+
     if (!currentUser?.id || !currentUser?.email) throw new Error("Unauthorized")
 
     if (isGroup && (!members || members.length < 2 || !name)) {
       throw new Error("Invalid Data")
     }
 
+    console.log("teest")
+
     if (isGroup) {
+      let membersId
+
+      if (members) {
+        membersId = members.map((member) => member.value)
+      }
+
       const createConversation = await db.conversation.create({
         data: {
           name,
           isGroup,
+          userId: [currentUser.id],
           users: {
             connect: [
               // @ts-expect-error
@@ -122,6 +126,7 @@ export async function createConversation(convo: ICreateConversations) {
               },
             ],
           },
+          messageId: "",
         },
         include: {
           users: true,
@@ -145,12 +150,12 @@ export async function createConversation(convo: ICreateConversations) {
       where: {
         OR: [
           {
-            userIds: {
+            userId: {
               equals: [currentUser.id, userId],
             },
           },
           {
-            userIds: {
+            userId: {
               equals: [userId, currentUser.id],
             },
           },
@@ -174,6 +179,8 @@ export async function createConversation(convo: ICreateConversations) {
             },
           ],
         },
+        userId: [currentUser.id, userId],
+        messageId: "",
       },
       include: {
         users: true,

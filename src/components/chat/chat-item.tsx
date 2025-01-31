@@ -39,7 +39,7 @@ export default function ChatItem({
   }, [conversation.messages])
 
   const lastConversationPartner = useMemo(
-    () => lastMessage?.senderId === id,
+    () => lastMessage?.userId === id,
     [lastMessage, id]
   )
 

@@ -9,12 +9,12 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id              String @id @default(auto()) @map("_id") @db.ObjectId
+  id              String @id @default(uuid())
   name            String?
   email           String? @unique
   emailVerified   DateTime?
@@ -23,11 +23,10 @@ model User {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   sessions        Session[]
-  conversationIds String[] @db.ObjectId
-  conversation    Conversation[] @relation(fields: [conversationIds], references: [id])
 
-  seenMessageIds  String[] @db.ObjectId
-  seenMessages    Message[] @relation("Seen", fields: [seenMessageIds], references: [id])
+  conversation    Conversation[] @relation(name: "ConversationToUser")
+
+  seenMessageIds  String[]
 
   accounts        Account[]
   messages        Message[]
@@ -35,17 +34,17 @@ model User {
 }
 
 model Account {
-  id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
+  id                String  @id @default(uuid())
+  userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.String
-  access_token      String? @db.String
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.String
+  id_token          String?
   session_state     String?
 
   createdAt DateTime @default(now())
@@ -58,9 +57,9 @@ model Account {
 
 
 model Session {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  id           String  @id @default(uuid())
   sessionToken String   @unique
-  userId       String   @db.ObjectId
+  userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -69,7 +68,7 @@ model Session {
 }
 
 model VerificationToken {
-  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  id         String  @id @default(uuid())
   identifier String
   token      String
   expires    DateTime
@@ -79,21 +78,23 @@ model VerificationToken {
 
 
 model Conversation {
-  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  id                String @id @default(uuid())
   createdAt         DateTime @default(now())
   lastMessageAt     DateTime @default(now())
   name              String?
   isGroup           Boolean?
 
-  messagesIds       String[] @db.ObjectId
+  messageId         String
   messages          Message[]
 
-  userIds           String[] @db.ObjectId
-  users             User[] @relation(fields: [userIds], references: [id])
+  userId           String[]
+
+  users User[] @relation(name: "ConversationToUser")
 }
 
+
 model Message {
-  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  id                String @id @default(uuid())
   body              String?
   image             String?
   isDeleted         Boolean? @default(false)
@@ -101,21 +102,18 @@ model Message {
   createdAt         DateTime @default(now())
   isEdited          Boolean?
 
-  seenIds           String[] @db.ObjectId
-  seen              User[] @relation("Seen", fields: [seenIds], references: [id])
-
-  conversationId    String @db.ObjectId
+  conversationId    String
   conversation      Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
 
   reactions         Reaction[]
-  senderId          String @db.ObjectId
-  sender            User @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Reaction {
-  id                String @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String @db.ObjectId
+  id                String @id @default(uuid())
+  userId            String
   user              User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  messageId         String @db.ObjectId
+  messageId         String
   message          Message @relation(fields: [messageId], references: [id], onDelete: Cascade)
 }

@@ -78,7 +78,7 @@ const MessageItem = ({ isCurrentUser = true, message }: MessageItemProps) => {
         <Avatar className="size-6">
           <AvatarImage
             src={
-              message.sender.image ??
+              message.user.image ??
               "https://raw.githubusercontent.com/benjoquilario/animehi-stream/refs/heads/master/public/placeholder.png"
             }
           />

@@ -27,8 +27,7 @@ export async function getChatMessages(conversationId: Conversation["id"]) {
       conversationId,
     },
     include: {
-      sender: true,
-      seen: true,
+      user: true,
     },
     orderBy: {
       createdAt: "desc",
@@ -50,7 +49,7 @@ export async function getConversations() {
       lastMessageAt: "desc",
     },
     where: {
-      userIds: {
+      userId: {
         has: currentUser.id,
       },
     },
@@ -58,8 +57,7 @@ export async function getConversations() {
       users: true,
       messages: {
         include: {
-          sender: true,
-          seen: true,
+          user: true,
         },
       },
     },

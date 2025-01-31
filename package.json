@@ -17,7 +17,7 @@
   "dependencies": {
     "@auth/prisma-adapter": "^2.5.2",
     "@hookform/resolvers": "^3.4.2",
-    "@prisma/client": "^5.20.0",
+    "@prisma/client": "^6.3.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
@@ -43,7 +43,6 @@
     "next": "14.2.3",
     "next-auth": "5.0.0-beta.21",
     "next-themes": "^0.3.0",
-    "prisma": "^5.13.0",
     "pusher": "^5.2.0",
     "pusher-js": "^8.4.0-rc2",
     "react": "^18",
@@ -75,6 +74,7 @@
     "postcss": "^8",
     "prettier": "^3.2.5",
     "prettier-plugin-tailwindcss": "^0.5.14",
+    "prisma": "^6.3.0",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }
