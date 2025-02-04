@@ -12,6 +12,7 @@ import db from "@/lib/db"
 import { getChatMessages, getConversations } from "@/lib/metrics"
 import { auth } from "@/auth"
 import { Metadata } from "next"
+import { FullMessage } from "@/types/types"
 
 interface ConversationsProps {
   params: {
@@ -123,7 +124,7 @@ export default async function Conversations({ params }: ConversationsProps) {
           <div className="flex size-full flex-col overflow-y-auto overflow-x-hidden">
             <ChatBody
               currentUserId={currentUserId}
-              initialMessages={messages}
+              initialMessages={messages as FullMessage[]}
             />
             <ChatForm />
           </div>

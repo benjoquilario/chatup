@@ -1,7 +1,7 @@
 import { Conversation, Message, User } from "@prisma/client"
 
 interface FullMessage extends Message {
-  sender: User
+  user: User
   seen: User[]
 }
 

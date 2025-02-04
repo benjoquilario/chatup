@@ -88,7 +88,7 @@ const ChatBody = ({ initialMessages = [], currentUserId }: ChatBodyProps) => {
       {hasNextPage && <div ref={scrollTrigger} />}
       <AnimatePresence>
         {messages.map((message) => {
-          const isCurrentUser = message.senderId === currentUserId
+          const isCurrentUser = message.userId === currentUserId
 
           return (
             <motion.div

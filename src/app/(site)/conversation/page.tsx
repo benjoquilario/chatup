@@ -25,7 +25,7 @@ export default async function ConversationPage() {
         <ChatHeader />
       </div>
       <div className="hide-scrollbar fixed bottom-0 top-[206px] z-50 w-full overflow-y-auto p-0 md:w-80 md:p-3">
-        <ChatList conversations={conversations} />
+        <ChatList conversations={conversations as any} />
       </div>
 
       <div className="size-full md:pl-80">

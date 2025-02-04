@@ -17,8 +17,7 @@ export async function GET(
       conversationId,
     },
     include: {
-      sender: true,
-      seen: true,
+      user: true,
     },
     orderBy: {
       createdAt: "desc",

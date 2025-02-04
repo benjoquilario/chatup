@@ -9,7 +9,7 @@ export default auth((req) => {
 
   const isAuth = !!req.auth
   const isAuthPage =
-    pathname.startsWith("/login") || pathname.startsWith("/register")
+    pathname.startsWith("/lauth/ogin") || pathname.startsWith("/auth/register")
 
   const sensitiveRoutes = ["/users", "/conversation"]
 
@@ -26,15 +26,15 @@ export default auth((req) => {
   }
 
   if (!isAuth && isAccessingSensitiveRoute) {
-    return NextResponse.redirect(new URL("/login", req.url))
+    return NextResponse.redirect(new URL("/auth/login", req.url))
   }
 })
 
 export const config = {
   matcher: [
     "/",
-    "/login",
-    "/register",
+    "/auth/login",
+    "/auth/register",
     "/users/:path*",
     "/conversation/:path*",
   ],
