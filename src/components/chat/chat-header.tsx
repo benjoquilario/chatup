@@ -1,11 +1,9 @@
 import ThemeToggle from "@/components/theme-toggle"
 import { Button } from "@/components/ui/button"
 import { HiLogout } from "react-icons/hi"
-import { TbHexagonLetterC } from "react-icons/tb"
 import ChatSearch from "./chat-search"
 import { Plus } from "lucide-react"
 import { logout } from "@/server/auth"
-import Link from "next/link"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,16 +12,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { MessageCircle } from "lucide-react"
 
 const ChatHeader = () => {
   return (
     <>
       <div className="w-full">
         <div className="mx-auto mb-2 flex h-[52px] w-full items-center justify-between gap-4 md:h-[64px] 2xl:h-[75px]">
-          <Link href="/" className="flex items-center">
-            <TbHexagonLetterC className="size-8" />
-            <span className="text-lg font-semibold">hatty</span>
-          </Link>
+          <div className="flex items-center">
+            <MessageCircle className="size-8 text-primary" />
+            <span className="ml-2 text-2xl font-bold text-foreground">
+              ChatUp
+            </span>
+          </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
             <form action={logout}>
